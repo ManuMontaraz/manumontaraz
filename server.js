@@ -7,6 +7,10 @@ const mariadb = require('mariadb')
 const socketIO = require('socket.io')
 const http = require('http')
 
+const test = require('./test.js')
+
+console.log(test)
+
 // Cargar variables de entorno
 dotenv.config()
 
@@ -50,7 +54,7 @@ io.on('connection', (socket) => {
 })
 
 // Arrancar servidor
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT
 server.listen(PORT, () => {
   console.log(`Servidor HTTP escuchando en http://localhost:${PORT}`)
 })
