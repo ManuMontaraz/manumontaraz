@@ -3,13 +3,8 @@ const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
-const mariadb = require('mariadb')
 const socketIO = require('socket.io')
 const http = require('http')
-
-const test = require('./test.js')
-
-console.log(test)
 
 // Cargar variables de entorno
 dotenv.config()
@@ -17,22 +12,9 @@ dotenv.config()
 // Crear app Express
 const app = express()
 app.use(express.json())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, '..', '..', 'public')))
 
-// Crear conexión a MariaDB
-const db = mariadb.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-  connectionLimit: 5
-})
-
-// Ruta de prueba
-app.get('/status', (req, res) => {
-  res.json({ "response": 'ok' })
-})
+const pool = require('./database')
 
 // Crear servidor HTTP
 const server = http.createServer(app)
@@ -40,8 +22,13 @@ const server = http.createServer(app)
 // WebSocket con Socket.io
 const io = socketIO(server)
 
+module.exports = { app, jwt, io, pool }
+require('./api.js')
+require('./io.js')
+
+/*
 io.on('connection', (socket) => {
-  console.log('Cliente conectado')
+  console.log('Cliente conectado') 
 
   socket.on('mensaje', (msg) => {
     console.log('Mensaje recibido:', msg)
@@ -52,9 +39,12 @@ io.on('connection', (socket) => {
     console.log('Cliente desconectado')
   })
 })
+*/
 
 // Arrancar servidor
 const PORT = process.env.PORT
 server.listen(PORT, () => {
   console.log(`Servidor HTTP escuchando en http://localhost:${PORT}`)
 })
+
+
