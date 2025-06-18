@@ -1,5 +1,5 @@
 // api.js
-const { app, jwt, pool } = require('./server')
+const { app, jwt, pool } = require('./server.js')
 const test = require('./test.js')
 
 app.post('/login',(request, response) => {
@@ -44,20 +44,20 @@ app.get('/api',verifyToken, (request, response) => {
 
 // Middleware para verificar el token
 function verifyToken(request, response, next) {
-  const bearerHeader = request.headers['authorization'];
+    const bearerHeader = request.headers['authorization'];
 
-  if (typeof bearerHeader !== 'undefined') {
-    const token = bearerHeader.split(' ')[1];
+    if (typeof bearerHeader !== 'undefined') {
+        const token = bearerHeader.split(' ')[1]
 
-    jwt.verify(token, process.env.JWT_SECRET, (error, authData) => {
-      if (error) {
-        return response.status(403).json({ message: 'Token inválido' });
-      } else {
-        request.user = authData;
-        next();
-      }
-    });
-  } else {
-    response.status(401).json({ message: 'Token no proporcionado' });
-  }
+        jwt.verify(token, process.env.JWT_SECRET, (error, authData) => {
+            if (error) {
+                return response.status(403).json({ message: 'Token inválido' })
+            } else {
+                request.user = authData
+                next()
+            }
+        })
+    } else {
+        response.status(401).json({ message: 'Token no proporcionado' })
+    }
 }

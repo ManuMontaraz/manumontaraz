@@ -6,13 +6,12 @@
         <title>EN DESARROLLO</title>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href='css/index.css'>
+        <script src='js/library/stripe.min.js'></script>
         <script src='js/index.js'></script>
         <script src="socket.io/socket.io.js"></script>
     </head>
     <body >
         <h1>EN DESARROLLO</h1>
-        <!--
-        <h1>Hola mundo</h1>
         <a href="/status">Status</a>
         <input type="text" id="user" placeholder="user"/>
         <input type="password" id="pass" placeholder="password"/>
@@ -20,6 +19,5 @@
         <button href="/api" onclick='event.preventDefault();fetch("/api",{headers:{"Authorization": `Bearer ${document.querySelector("#token").value}`}}).then(response=>response.json()).then(data=>{document.querySelector("#log").innerText = JSON.stringify(data)})'>Api</button>
         <textarea id="log" rows="10" cols="50"></textarea>
         <input type="text" id="token" placeholder="token"/>
-        -->
     </body>
 </html>

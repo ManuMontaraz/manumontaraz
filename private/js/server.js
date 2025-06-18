@@ -9,6 +9,9 @@ const http = require('http')
 // Cargar variables de entorno
 dotenv.config()
 
+// Configurar Stripe
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+
 // Crear app Express
 const app = express()
 app.use(express.json())
@@ -22,8 +25,9 @@ const server = http.createServer(app)
 // WebSocket con Socket.io
 const io = socketIO(server)
 
-module.exports = { app, jwt, io, pool }
+module.exports = { app, jwt, io, pool, stripe }
 require('./api.js')
+require('./stripe.js')
 require('./io.js')
 
 /*
