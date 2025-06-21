@@ -61,3 +61,20 @@ function verifyToken(request, response, next) {
         response.status(401).json({ message: 'Token no proporcionado' })
     }
 }
+
+//==== STRIPE ====//
+const { get_stripe_products, stripe_pay } = require('./stripe.js')
+
+// Ruta para obtener productos de Stripe
+app.get('/products', async (request, response) => {
+
+    get_stripe_products(response)
+    
+})
+
+// Ruta para crear un Payment Intent
+app.post('/pay-intent', async (request, response) => {
+    
+    stripe_pay(request, response)
+    
+})

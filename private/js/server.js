@@ -9,15 +9,13 @@ const http = require('http')
 // Cargar variables de entorno
 dotenv.config()
 
-// Configurar Stripe
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 // Crear app Express
 const app = express()
 app.use(express.json())
 app.use(express.static(path.join(__dirname, '..', '..', 'public')))
 
-const pool = require('./database')
+const pool = require('./database.js')
 
 // Crear servidor HTTP
 const server = http.createServer(app)
@@ -25,25 +23,10 @@ const server = http.createServer(app)
 // WebSocket con Socket.io
 const io = socketIO(server)
 
-module.exports = { app, jwt, io, pool, stripe }
+module.exports = { app, jwt, io, pool }
 require('./api.js')
 require('./stripe.js')
 require('./io.js')
-
-/*
-io.on('connection', (socket) => {
-  console.log('Cliente conectado') 
-
-  socket.on('mensaje', (msg) => {
-    console.log('Mensaje recibido:', msg)
-    socket.broadcast.emit('mensaje', msg)
-  })
-
-  socket.on('disconnect', () => {
-    console.log('Cliente desconectado')
-  })
-})
-*/
 
 // Arrancar servidor
 const PORT = process.env.PORT
