@@ -68,6 +68,7 @@ function login(username, password, response, token = false) {
         )
         */
 
+        // TO-DO: SI CHECK "RECUERDAME" == true: TOKEN EXPIRA EN 7 DÍAS; SI NO: EN 1 HORA
         jwt.sign(userPayload, process.env.JWT_SECRET, { expiresIn: '7d' }, (_error, token) => {
             if (_error) {
                 console.error('Error al firmar el token:', _error)

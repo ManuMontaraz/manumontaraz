@@ -14,8 +14,15 @@ fetch(
 
 */
 
+document.addEventListener("DOMContentLoaded", function() {
+
+    if(get_cookie("montarazSession"))login()
+        
+})
+
+
 function login(){
-    event.preventDefault()
+    //event.preventDefault()
 
     let sessionCookie = get_cookie("montarazSession")
 
