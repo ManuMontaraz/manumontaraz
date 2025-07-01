@@ -1,8 +1,12 @@
 // api.js
-const { app, jwt, pool } = require('./server.js')
+const { app } = require('./server.js')
+const { login, verify_token } = require('./database.js')
 const test = require('./test.js')
 
-app.post('/login',(request, response) => {
+//==== SESIÓN ====//
+
+// Login manual de usuario
+app.post('/api/login',(request, response) => {
     
     if(!request.body)return
     
@@ -11,69 +15,46 @@ app.post('/login',(request, response) => {
 
     console.log(`usuario "${queryUser}" intentando iniciar sesión`)
 
-    pool.query(
-        `SELECT 
-            id,
-            name
-        FROM users
-        WHERE name = '${queryUser}'`
-    ).then((responseDB)=>{
-        
-        const user = responseDB.rows[0]
+    login(queryUser,queryPass,response)
+}) 
 
-        if (user.length === 0) {
-            return response.status(404).json({ message: 'Usuario no encontrado' });
-        }
+// Login jwt de usuario
+app.post('/api/login/jwt',verify_token,(request, response) => {
+    
+    if(!request.body)return
 
-        jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' }, (error, token) => {
-            console.log(`usuario "${queryUser}" inició sesión correctamente`)
-            response.json({ token })
-        })
-    })
-})
+    const queryUser = request.body.user
+    const token = request.headers.authorization.split(' ')[1]
+
+    console.log("token",token)
+
+    console.log(`usuario "${queryUser}" intentando iniciar sesión desde JWT`)
+
+    login(queryUser,false,response,token)
+}) 
 
 // Ruta de prueba
-app.get('/status', (request, response) => {
+app.get('/api/status', (_request, response) => {
   response.json({"response": 'online'})
 })
 
 // Ruta de prueba2
-app.get('/api',verifyToken, (request, response) => {
+app.get('/api', verify_token, (request, response) => {
   response.json({ "test": test.Holis, user: request.user })
 })
-
-// Middleware para verificar el token
-function verifyToken(request, response, next) {
-    const bearerHeader = request.headers['authorization'];
-
-    if (typeof bearerHeader !== 'undefined') {
-        const token = bearerHeader.split(' ')[1]
-
-        jwt.verify(token, process.env.JWT_SECRET, (error, authData) => {
-            if (error) {
-                return response.status(403).json({ message: 'Token inválido' })
-            } else {
-                request.user = authData
-                next()
-            }
-        })
-    } else {
-        response.status(401).json({ message: 'Token no proporcionado' })
-    }
-}
 
 //==== STRIPE ====//
 const { get_stripe_products, stripe_pay } = require('./stripe.js')
 
 // Ruta para obtener productos de Stripe
-app.get('/products', async (request, response) => {
+app.get('/api/stripe/products', async (_request, response) => {
 
     get_stripe_products(response)
     
 })
 
 // Ruta para crear un Payment Intent
-app.post('/pay-intent', async (request, response) => {
+app.post('/api/stripe/pay-intent', verify_token, async (request, response) => {
     
     stripe_pay(request, response)
     

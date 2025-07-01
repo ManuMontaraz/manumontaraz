@@ -1,4 +1,4 @@
-
+// stripe.js
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
 
 async function get_stripe_products(response) {

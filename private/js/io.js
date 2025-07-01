@@ -1,3 +1,4 @@
+// io.js
 const { io } = require('./server.js')
 
 io.on('connection', (socket) => {
