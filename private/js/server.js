@@ -1,4 +1,5 @@
 // server.js
+const fs = require('fs');
 const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
@@ -13,7 +14,27 @@ dotenv.config()
 // Crear app Express
 const app = express()
 app.use(express.json())
-app.use(express.static(path.join(__dirname, '..', '..', 'public')))
+
+// Servir archivos estáticos desde la carpeta public
+//app.use(express.static(path.join(__dirname, '..', '..', 'public'))) 
+
+// Servir archivos dinámicos desde la carpeta public
+app.get('/', (request, response) => { 
+  const filePath = path.join(__dirname, '..', '..', 'public', 'index.html')
+  fs.readFile(filePath, 'utf8', (error, html) => {
+    if (error) {
+      return response.status(500).send('Error leyendo el archivo')
+    }
+
+    // Reemplazar palabras clave
+    // TO-DO: Hacer api para reemplazar palabras clave
+    const replacedHtml = html
+      .replace(/{{nombre}}/g, 'Juan')
+      .replace(/{{fecha}}/g, new Date().toLocaleDateString())
+
+    response.send(replacedHtml)
+  })
+})
 
 // Crear servidor HTTP
 const server = http.createServer(app)
@@ -21,7 +42,7 @@ const server = http.createServer(app)
 // WebSocket con Socket.io
 const io = socketIO(server)
 
-module.exports = { app, jwt, io, crypto }
+module.exports = { fs, path, app, jwt, io, crypto }
 require('./database.js')
 require('./api.js')
 require('./stripe.js')

@@ -14,12 +14,33 @@
     </head>
     <body >
         <h1>EN DESARROLLO</h1>
-        <a href="/api/status">Status</a>
-        <input type="text" id="user" placeholder="user"/>
-        <input type="password" id="pass" placeholder="password"/>
-        <button onclick='login()'>Login</button>
-        <button href="/api" onclick='event.preventDefault();fetch("/api",{headers:{"Authorization": `Bearer ${document.querySelector("#token").value}`}}).then(response=>response.json()).then(data=>{document.querySelector("#log").innerText = JSON.stringify(data)})'>Api</button>
+        <p>{{nombre}}</p>
+        <p>{{fecha}}</p>
+        <a href="/api/status">Estado</a>
+        <section id="login">
+            <input type="text" id="login_user" placeholder="usuario/email"/>
+            <input type="password" id="login_pass" placeholder="contraseña"/>
+            <label for="login_remember_me">Recordarme</label>
+            <input type="checkbox" id="login_remember_me"/>
+            <button onclick='login()'>Login</button>
+        </section>
+        <section id="signin">
+            <input type="text" id="signin_user" placeholder="usuario"/>
+            <input type="email" id="signin_email" placeholder="email"/>
+            <input type="password" id="signin_pass" placeholder="contraseña"/>
+            <input type="password" id="signin__confirm_pass" placeholder="repite contraseña"/>
+            <label for="signin_remember_me">Recordarme</label>
+            <input type="checkbox" id="signin_remember_me"/>
+            <label for="signin_terms">Aceptar Términos</label>
+            <input type="checkbox" id="signin_terms"/>
+            <label for="signin_newsletter">Suscribir a newsletter</label>
+            <input type="checkbox" id="signin_newsletter"/>
+            <button onclick='signin()'>Registrarse</button>
+        </section>
         <textarea id="log" rows="10" cols="50"></textarea>
-        <input type="text" id="token" placeholder="token"/>
+        <button href="/api" onclick='test_api()'>Test api</button>
+        <button onclick='logout()'>Salir</button>
+        <section id="shop">
+        </section>
     </body>
 </html>

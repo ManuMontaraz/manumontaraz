@@ -11,6 +11,12 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 })
 
+function logout(username, response) {
+    console.log(`usuario "${username}" cerró sesión correctamente`)
+    response.setHeader('Set-Cookie', 'montarazSession=; Path=/; Max-Age=0; SameSite=Strict') // Elimina la cookie de sesión
+    return response.json({ message: 'Sesión cerrada correctamente' })
+}
+
 function login(username, password, response, token = false) {
 
     // TO-DO: SI EN DB "REVOKE TOKEN", NO DEBERÍA PODER INICIAR SESIÓN CON JWT
@@ -49,7 +55,6 @@ function login(username, password, response, token = false) {
             return response.status(401).json({ message: 'Usuario o contraseña incorrecta' })
         }
         
-
         const userPayload = {user: user.username}
 
         /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE
@@ -68,13 +73,14 @@ function login(username, password, response, token = false) {
         )
         */
 
-        // TO-DO: SI CHECK "RECUERDAME" == true: TOKEN EXPIRA EN 7 DÍAS; SI NO: EN 1 HORA
-        jwt.sign(userPayload, process.env.JWT_SECRET, { expiresIn: '7d' }, (_error, token) => {
+        // TO-DO: SI CHECK "RECUERDAME" == true: TOKEN EXPIRA EN 7 DÍAS, SI == false: EN 1 HORA
+        jwt.sign(userPayload, process.env.JWT_SECRET, { expiresIn: '1h'/*'7d'*/ }, (_error, token) => {
             if (_error) {
                 console.error('Error al firmar el token:', _error)
                 return response.status(500).json({ error: 'Error interno' })
             }
             console.log(`usuario "${username}" inició sesión correctamente`)
+            // TO-DO: SI CHECK "RECUERDAME" == true: COOKIE EXPIRA EN 7 DÍAS, SI == false: EN 1 HORA
             response.setHeader('Set-Cookie', `montarazSession=${token}; Path=/; Max-Age=3600; SameSite=Strict`);
             response.json({token, name:user.name, last_name:user.last_name, message: 'Inicio de sesión correcto'})
         })
@@ -119,4 +125,4 @@ function verify_token(request, response, next) {
     }
 }
 
-module.exports = { login, verify_token }
+module.exports = { login, logout, verify_token }

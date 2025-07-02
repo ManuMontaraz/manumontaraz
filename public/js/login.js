@@ -26,11 +26,11 @@ function login(){
 
     let sessionCookie = get_cookie("montarazSession")
 
-    if(sessionCookie && (document.querySelector("#user").value || document.querySelector("#pass").value)){
+    if(sessionCookie && (document.querySelector("#login_user").value || document.querySelector("#login_pass").value)){
         sessionCookie = null
     }
 
-    if (!sessionCookie && (!document.querySelector("#user").value || !document.querySelector("#pass").value)) {
+    if (!sessionCookie && (!document.querySelector("#login_user").value || !document.querySelector("#login_pass").value)) {
         document.querySelector("#log").innerText = "Por favor, completa ambos campos."
         return
     }
@@ -44,9 +44,9 @@ function login(){
         "Content-Type": "application/json; charset=utf-8"
     }
 
-    const body = JSON.stringify(!sessionCookie || (document.querySelector("#user").value && document.querySelector("#pass").value) ? {
-        user: document.querySelector("#user").value,
-        pass: document.querySelector("#pass").value 
+    const body = JSON.stringify(!sessionCookie || (document.querySelector("#login_user").value && document.querySelector("#login_pass").value) ? {
+        user: document.querySelector("#login_user").value,
+        pass: document.querySelector("#login_pass").value 
     } : {
         user: JSON.parse(atob(sessionCookie.split(".")[1])).user
     })
@@ -69,12 +69,31 @@ function login(){
     })
 }
 
-function get_cookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
+function logout(){
+    //event.preventDefault()
 
-function delete_cookie(name) {
-    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    const sessionCookie = get_cookie("montarazSession")
+
+    if (!sessionCookie) {
+        document.querySelector("#log").innerText = "No hay sesión iniciada."
+        return
+    }
+
+    document.querySelector("#log").innerText = "Cerrando sesión..."
+
+    const body = JSON.stringify({user: JSON.parse(atob(sessionCookie.split(".")[1])).user})
+
+    fetch(
+        "/api/logout",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            body: body
+        }
+    ).then(response=>response.json()).then(data=>{
+        document.querySelector("#log").innerText = JSON.stringify(data)
+        delete_cookie("montarazSession")
+    })
 }

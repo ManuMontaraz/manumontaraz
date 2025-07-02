@@ -1,6 +1,6 @@
 // api.js
 const { app } = require('./server.js')
-const { login, verify_token } = require('./database.js')
+const { login, logout, verify_token } = require('./database.js')
 const test = require('./test.js')
 
 //==== SESIÓN ====//
@@ -33,6 +33,18 @@ app.post('/api/login/jwt',verify_token,(request, response) => {
     login(queryUser,false,response,token)
 }) 
 
+// Log out manual de usuario
+app.post('/api/logout',(request, response) => {
+    
+    if(!request.body)return
+    
+    const queryUser = request.body.user
+
+    console.log(`usuario "${queryUser}" cerrando sesión`)
+
+    logout(queryUser,response)
+}) 
+
 // Ruta de prueba
 app.get('/api/status', (_request, response) => {
   response.json({"response": 'online'})
@@ -40,8 +52,18 @@ app.get('/api/status', (_request, response) => {
 
 // Ruta de prueba2
 app.get('/api', verify_token, (request, response) => {
-  response.json({ "test": test.Holis, user: request.user })
+  response.json({ "test": test.Holis, user: request.user.user })
 })
+
+//==== TRADUCCION ====//
+
+app.post('/api/montrad',(request, response) => {
+    
+    if(!request.body)return
+
+    //TO-DO: Hacer api para traducir palabras clave
+    
+}) 
 
 //==== STRIPE ====//
 const { get_stripe_products, stripe_pay } = require('./stripe.js')
