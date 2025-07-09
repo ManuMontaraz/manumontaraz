@@ -43,6 +43,7 @@ const server = http.createServer(app)
 const io = socketIO(server)
 
 module.exports = { fs, path, app, jwt, io, crypto }
+require('./mail.js')
 require('./database.js')
 require('./api.js')
 require('./stripe.js')

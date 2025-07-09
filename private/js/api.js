@@ -33,7 +33,7 @@ app.post('/api/login/jwt',verify_token,(request, response) => {
     login(queryUser,false,response,token)
 }) 
 
-// Log out manual de usuario
+// Logout de usuario
 app.post('/api/logout',(request, response) => {
     
     if(!request.body)return
@@ -45,6 +45,28 @@ app.post('/api/logout',(request, response) => {
     logout(queryUser,response)
 }) 
 
+// Registro de usuario
+app.post('/api/signin',(request, response) => {
+    
+    if(!request.body)return
+    
+    const queryName = request.body.name
+    const queryLastName = request.body.lastName
+    const queryUser = request.body.user
+    const queryEmail = request.body.email
+    const queryPass = request.body.pass
+    const queryRepeatPass = request.body.repeatPass
+    const queryRemember = request.body.remember
+    const queryTerms = request.body.terms
+    const queryNewsletter = request.body.newsletter
+
+    console.log(`usuario "${queryUser}" intentando registrarse`)
+
+    //login(queryUser,queryPass,response)
+}) 
+
+// ==== RUTAS DE PRUEBA ====//
+
 // Ruta de prueba
 app.get('/api/status', (_request, response) => {
   response.json({"response": 'online'})
@@ -55,11 +77,24 @@ app.get('/api', verify_token, (request, response) => {
   response.json({ "test": test.Holis, user: request.user.user })
 })
 
+// ==== NODEMAIL ====//
+const { send_mail } = require('./mail.js')
+
+// Ruta de prueba
+app.get('/api/mail', (_request, response) => {
+  response.json("Probando nodemailer")
+
+  send_mail("noreply", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
+  send_mail("contact", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
+})
+
 //==== TRADUCCION ====//
 
-app.post('/api/montrad',(request, response) => {
+app.get('/api/montrad',(request, response) => { 
     
     if(!request.body)return
+
+    response.json("Hola, soy la API de traducción de palabras clave")
 
     //TO-DO: Hacer api para traducir palabras clave
     
