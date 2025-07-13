@@ -15,9 +15,6 @@ dotenv.config()
 const app = express()
 app.use(express.json())
 
-// Servir archivos estáticos desde la carpeta public
-//app.use(express.static(path.join(__dirname, '..', '..', 'public'))) 
-
 // Servir archivos dinámicos desde la carpeta public
 app.get('/', (request, response) => { 
   const filePath = path.join(__dirname, '..', '..', 'public', 'index.html')
@@ -32,9 +29,15 @@ app.get('/', (request, response) => {
       .replace(/{{nombre}}/g, 'Juan')
       .replace(/{{fecha}}/g, new Date().toLocaleDateString())
 
+    response
+        .set('Content-Type', 'text/html')
+
     response.send(replacedHtml)
   })
 })
+
+// Servir archivos estáticos desde la carpeta public
+app.use(express.static(path.join(__dirname, '..', '..', 'public'))) 
 
 // Crear servidor HTTP
 const server = http.createServer(app)

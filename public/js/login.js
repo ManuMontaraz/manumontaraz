@@ -22,15 +22,19 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function login(){
-    //event.preventDefault()
+    event.preventDefault()
+
+    const elementUser = document.querySelector("#login_user")
+    const elementPass = document.querySelector("#login_pass")
+    const elementRemember = document.querySelector("#login_remember")
 
     let sessionCookie = get_cookie("montarazSession")
 
-    if(sessionCookie && (document.querySelector("#login_user").value || document.querySelector("#login_pass").value)){
+    if(sessionCookie && (elementUser.value || elementPass.value)){
         sessionCookie = null
     }
 
-    if (!sessionCookie && (!document.querySelector("#login_user").value || !document.querySelector("#login_pass").value)) {
+    if (!sessionCookie && (!elementUser.value || !elementPass.value)) {
         document.querySelector("#log").innerText = "Por favor, completa ambos campos."
         return
     }
@@ -44,11 +48,13 @@ function login(){
         "Content-Type": "application/json; charset=utf-8"
     }
 
-    const body = JSON.stringify(!sessionCookie || (document.querySelector("#login_user").value && document.querySelector("#login_pass").value) ? {
-        user: document.querySelector("#login_user").value,
-        pass: document.querySelector("#login_pass").value 
+    const body = JSON.stringify(!sessionCookie || (elementUser.value && elementPass.value) ? {
+        user: elementUser.value,
+        pass: elementPass.value,
+        remember: elementRemember.checked
     } : {
-        user: JSON.parse(atob(sessionCookie.split(".")[1])).user
+        user: JSON.parse(atob(sessionCookie.split(".")[1])).user,
+        remember: JSON.parse(atob(sessionCookie.split(".")[1])).remember
     })
 
     console.log("url",url)
@@ -70,7 +76,7 @@ function login(){
 }
 
 function logout(){
-    //event.preventDefault()
+    event.preventDefault()
 
     const sessionCookie = get_cookie("montarazSession")
 
@@ -96,4 +102,8 @@ function logout(){
         document.querySelector("#log").innerText = JSON.stringify(data)
         delete_cookie("montarazSession")
     })
+}
+
+function signin(){
+    event.preventDefault()
 }

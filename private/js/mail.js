@@ -1,39 +1,103 @@
 const mail = require('nodemailer')
 
-const transporter_noreply = mail.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_PORT,
-    secure: process.env.MAIL_PORT == 465 ? true : process.env.MAIL_PORT == 587 ? false : null,
-    auth: {
-        user: process.env.MAIL_NOREPLY,
-        pass: process.env.MAIL_NOREPLY_PASS
-    }
-})
+const { generateKeyPairSync } = require("./server.js").crypto
+const { fs, path } = require('./server.js')
 
-const transporter_contact = mail.createTransport({
-    host: process.env.MAIL_HOST, 
-    port: process.env.MAIL_PORT,
-    secure: process.env.MAIL_PORT == 465 ? true : process.env.MAIL_PORT == 587 ? false : null,
-    auth: {
-        user: process.env.MAIL_CONTACT,
-        pass: process.env.MAIL_CONTACT_PASS
+const dkimKeysPath = path.join(__dirname, '..', 'keys')
+
+const emails = []
+
+function check_dkim_keys() {
+    // Verificar si las claves DKIM ya existen
+
+    if (fs.existsSync(dkimKeysPath + '/dkim-private.key') && fs.existsSync(dkimKeysPath + '/dkim-public.key')) {
+        console.log("Ya existen las claves DKIM.");
+        return true;
+    } else {
+        console.log("Claves DKIM no encontradas, generando nuevas claves...")
+        
+        // Generar clave RSA de 1024 bits
+        const { publicKey, privateKey } = generateKeyPairSync("rsa", {
+            modulusLength: 1024,
+            publicKeyEncoding: {
+                type: "spki",
+                format: "pem",
+            },
+            privateKeyEncoding: {
+                type: "pkcs8",
+                format: "pem",
+            },
+        })
+
+        // Guardar las claves en archivos (opcional)
+        fs.writeFileSync(dkimKeysPath + '/dkim-private.key', privateKey)
+        fs.writeFileSync(dkimKeysPath + '/dkim-public.key', publicKey)
+
+        // Mostrar en consola (opcional)
+        console.log(`Clave privada generada y guardada en ${dkimKeysPath + '/dkim-private.key'}`)
+        console.log(`Clave pública generada y guardada en ${dkimKeysPath + '/dkim-public.key'}`)
+        return false
     }
-})
+}
+
+function create_transporter(name) {
+
+    if(!name)return console.error('Missing name parameter for create_transporter')
+
+    const account = JSON.parse(process.env.MAIL_ACCOUNTS)[name]
+
+    if (!account || !account.user || !account.password) return console.error(`Invalid account configuration for ${name}`)
+    
+    const user = `${account.user}@${process.env.DNS}`
+
+    const transporter = mail.createTransport({
+        host: process.env.MAIL_HOST, 
+        port: process.env.MAIL_PORT,
+        secure: process.env.MAIL_PORT == 465 ? true : process.env.MAIL_PORT == 587 ? false : null,
+        auth: {
+            user: user,
+            pass: account.password
+        },
+        dkim: {
+            domainName: process.env.DNS,
+            keySelector: process.env.MAIL_DKIM_SELECTOR,
+            privateKey: fs.readFileSync(dkimKeysPath + '/dkim-private.key', "utf8")
+        }
+    })
+
+    const objectTransporter = {
+        "name":name,
+        "user":user,
+        "transporter":transporter
+    }
+
+    emails.push(objectTransporter)
+    
+    return objectTransporter
+}
 
 async function send_mail(from, to, subject, text) {
 
     if (!from || !to || !subject || !text)return console.error('Missing required parameters for send_mail')
 
+    const email = emails.find(email => email.name === from)
+
     let transporter
 
-    if (from === 'noreply') {
-        from = process.env.MAIL_NOREPLY
-        transporter = transporter_noreply
-    }else if (from === 'contact') {
-        from = process.env.MAIL_CONTACT
-        transporter = transporter_contact
-    } else {
-        return console.error('Invalid sender type. Use "noreply" or "contact".')
+    if(email) {
+
+        console.log(`Transporter found for ${from}:`, email.user)
+
+        from = email.user
+        transporter = email.transporter
+    }else{
+        console.log(`No transporter found from: ${from}\nCreating new transporter...`)
+        const newEmail = create_transporter(from)
+
+        if(!newEmail) return console.error(`Failed to create transporter for ${from}`)
+
+        from = newEmail.user
+        transporter = newEmail.transporter
     }
 
     const mailOptions = {
@@ -51,4 +115,5 @@ async function send_mail(from, to, subject, text) {
     }
 }
 
+check_dkim_keys()
 module.exports = { send_mail }

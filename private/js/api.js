@@ -10,12 +10,15 @@ app.post('/api/login',(request, response) => {
     
     if(!request.body)return
     
-    const queryUser = request.body.user
-    const queryPass = request.body.pass
+    const queryData = {
+        user: request.body.user,
+        pass: request.body.pass,
+        remember: request.body.remember
+    }
 
-    console.log(`usuario "${queryUser}" intentando iniciar sesión`)
+    console.log(`usuario "${queryData.user}" intentando iniciar sesión`)
 
-    login(queryUser,queryPass,response)
+    login(queryData,response)
 }) 
 
 // Login jwt de usuario
@@ -23,14 +26,17 @@ app.post('/api/login/jwt',verify_token,(request, response) => {
     
     if(!request.body)return
 
-    const queryUser = request.body.user
-    const token = request.headers.authorization.split(' ')[1]
+    const queryData = {
+        user: request.body.user,
+        remember: request.body.remember,
+        token: request.headers.authorization.split(' ')[1]
+    }
 
-    console.log("token",token)
+    console.log("token",queryData.token)
 
-    console.log(`usuario "${queryUser}" intentando iniciar sesión desde JWT`)
+    console.log(`usuario "${queryData.user}" intentando iniciar sesión desde JWT`)
 
-    login(queryUser,false,response,token)
+    login(queryData,response)
 }) 
 
 // Logout de usuario
@@ -82,10 +88,20 @@ const { send_mail } = require('./mail.js')
 
 // Ruta de prueba
 app.get('/api/mail', (_request, response) => {
-  response.json("Probando nodemailer")
+  //response.json("Probando nodemailer")
 
-  send_mail("noreply", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
-  send_mail("contact", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
+  const to = _request.query.to;
+
+  if (!to) {
+    return response.status(400).json({ error: "Debes pasar el correo como query param 'to'" });
+  }
+
+  send_mail("contact", to, "Probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz");
+  
+  response.json({ message: `Correo enviado a ${to}` });
+
+  //send_mail("noreply", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
+  //send_mail("contact", "maarblan@gmail.com", "probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz")
 })
 
 //==== TRADUCCION ====//
