@@ -5,6 +5,10 @@ node_modules/
 .env
 .env.*  # Ignora archivos como .env.production, .env.local, etc.
 
+# Keys
+.key
+*.key
+
 # Logs
 logs/
 *.log
