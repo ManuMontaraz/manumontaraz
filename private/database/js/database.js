@@ -1,5 +1,6 @@
 // database.js
-const { crypto, jwt } = require('./server.js')
+const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 const { Pool } = require('pg')
 
 // Configura tu conexión
@@ -68,22 +69,6 @@ function login(data, response) {
             remember:remember
         }
 
-        /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE
-        const passwordCosa = hash_password(password)
-        console.log("passwordCosa",passwordCosa)
-
-        pool.query(
-            `UPDATE users 
-            SET password = $2, password_salt = $3
-            WHERE username = $1`,
-            [
-                username,
-                passwordCosa.hash,
-                passwordCosa.salt
-            ]
-        )
-        */
-
         //SI CHECK "RECUERDAME" == true: TOKEN EXPIRA EN 7 DÍAS, SI == false: EN 1 HORA
         jwt.sign(userPayload, process.env.JWT_SECRET, { expiresIn: remember?'7d':'1h'}, (_error, token) => {
             if (_error) {
@@ -99,7 +84,21 @@ function login(data, response) {
 }
 
 function signin(){
-    
+    /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE
+    const passwordCosa = hash_password(password)
+    console.log("passwordCosa",passwordCosa)
+
+    pool.query(
+        `UPDATE users 
+        SET password = $2, password_salt = $3
+        WHERE username = $1`,
+        [
+            username,
+            passwordCosa.hash,
+            passwordCosa.salt
+        ]
+    )
+    */
 }
 
 // Crea un hash de la contraseña con un salt aleatorio
@@ -140,4 +139,4 @@ function verify_token(request, response, next) {
     }
 }
 
-module.exports = { login, logout, signin, verify_token }
+module.exports = { pool, jwt, login, logout, signin, verify_token }

@@ -4,7 +4,7 @@
   "description": "manu montaraz web",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon private/js/server.js",
+    "start": "nodemon private/server/js/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Manu Montaraz",

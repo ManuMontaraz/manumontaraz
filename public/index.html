@@ -7,6 +7,7 @@
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href='css/index.css'>
         
+        <script src='js/multilang.js'></script>
         <script src='js/login.js'></script>
         <script src='js/index.js'></script>
         
@@ -14,6 +15,10 @@
     </head>
     <body >
         <h1>EN DESARROLLO</h1>
+        <section id="language">
+            <button onclick='set_language("es")'>ES</button>
+            <button onclick='set_language("en")'>EN</button>
+        </section>
         <section id="login">
             <h2>Login</h2>
             <form>
@@ -43,11 +48,10 @@
                 <button onclick='signin()'>Registrarse</button>
             </form>
         </section>
-        <section id="signin">
+        <section id="testing">
             <h2>Testing</h2>
             <textarea id="log" rows="10" cols="50"></textarea>
-            <p>{{nombre}}</p>
-            <p>{{fecha}}</p>
+            <p mlang="name">[mlang:name]</p>
             <a href="/api/status">Estado</a>
             <button href="/api" onclick='test_api()'>Test api</button>
         </section>

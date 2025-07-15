@@ -1,7 +1,8 @@
 // api.js
-const { app } = require('./server.js')
-const { login, logout, verify_token } = require('./database.js')
-const test = require('./test.js')
+const path = require('path')
+const { app } = require(path.join(__dirname,'..','..','server','js','server.js'))
+const { pool, jwt, login, logout, verify_token } = require(path.join(__dirname,'..','..','database','js','database.js'))
+const test = require(path.join(__dirname,'..','..','test','js','test.js'))
 
 //==== SESIÓN ====//
 
@@ -84,7 +85,7 @@ app.get('/api', verify_token, (request, response) => {
 })
 
 // ==== NODEMAIL ====//
-const { send_mail } = require('./mail.js')
+const { send_mail } = require(path.join(__dirname,'..','..','mail','js','mail.js'))
 
 // Ruta de prueba
 app.get('/api/mail', (_request, response) => {
@@ -96,7 +97,7 @@ app.get('/api/mail', (_request, response) => {
     return response.status(400).json({ error: "Debes pasar el correo como query param 'to'" });
   }
 
-  send_mail("contact", to, "Probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz");
+  send_mail("noreply", to, "Probando nodemailer", "Hola, esto es una prueba de nodemailer desde la API de Manu Montaraz");
   
   response.json({ message: `Correo enviado a ${to}` });
 
@@ -106,18 +107,43 @@ app.get('/api/mail', (_request, response) => {
 
 //==== TRADUCCION ====//
 
-app.get('/api/montrad',(request, response) => { 
+app.get('/api/language',(request, response) => { 
     
     if(!request.body)return
 
-    response.json("Hola, soy la API de traducción de palabras clave")
+    response.json("Hola, soy la API de traducción de palabras clave, pero aún no existo :(")
+
+    //TO-DO: Hacer api para traducir palabras clave
+    
+}) 
+
+app.post('/api/language/set',(request, response) => { 
+    
+    if(!request.body)return
+
+    const queryLang = request.body.lang
+
+    const token = request.headers.authorization ? request.headers.authorization.split(' ')[1] : null
+
+    jwt.verify(token, process.env.JWT_SECRET, (error, authData) => {
+        if (error) {
+            console.log('Token inválido:', error)
+            return response.status(403).json({ message: 'Token inválido' })
+        } else {
+            request.user = authData
+        }
+    })
+
+    console.log(request.user)
+
+    response.json(`Hola, quieres traducir la web en: '${queryLang}'`)
 
     //TO-DO: Hacer api para traducir palabras clave
     
 }) 
 
 //==== STRIPE ====//
-const { get_stripe_products, stripe_pay } = require('./stripe.js')
+const { get_stripe_products, stripe_pay } = require(path.join(__dirname,'..','..','stripe','js','stripe.js'))
 
 // Ruta para obtener productos de Stripe
 app.get('/api/stripe/products', async (_request, response) => {

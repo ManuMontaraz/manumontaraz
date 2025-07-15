@@ -1,16 +1,19 @@
 const mail = require('nodemailer')
 
-const { generateKeyPairSync } = require("./server.js").crypto
-const { fs, path } = require('./server.js')
+const fs = require('fs')
+const path = require('path')
+const { generateKeyPairSync } = require('crypto')
 
 const dkimKeysPath = path.join(__dirname, '..', 'keys')
+const dkimPrivateKeyPath = path.join(dkimKeysPath, 'dkim-private.key')
+const dkimPublicKeyPath = path.join(dkimKeysPath, 'dkim-public.key')
 
 const emails = []
 
 function check_dkim_keys() {
     // Verificar si las claves DKIM ya existen
 
-    if (fs.existsSync(dkimKeysPath + '/dkim-private.key') && fs.existsSync(dkimKeysPath + '/dkim-public.key')) {
+    if (fs.existsSync(dkimPrivateKeyPath) && fs.existsSync(dkimPublicKeyPath)) {
         console.log("Ya existen las claves DKIM.");
         return true;
     } else {
@@ -30,12 +33,12 @@ function check_dkim_keys() {
         })
 
         // Guardar las claves en archivos (opcional)
-        fs.writeFileSync(dkimKeysPath + '/dkim-private.key', privateKey)
-        fs.writeFileSync(dkimKeysPath + '/dkim-public.key', publicKey)
+        fs.writeFileSync(dkimPrivateKeyPath, privateKey)
+        fs.writeFileSync(dkimPublicKeyPath, publicKey)
 
         // Mostrar en consola (opcional)
-        console.log(`Clave privada generada y guardada en ${dkimKeysPath + '/dkim-private.key'}`)
-        console.log(`Clave pública generada y guardada en ${dkimKeysPath + '/dkim-public.key'}`)
+        console.log(`Clave privada generada y guardada en ${dkimPrivateKeyPath}`)
+        console.log(`Clave pública generada y guardada en ${dkimPublicKeyPath}`)
         return false
     }
 }
@@ -61,7 +64,7 @@ function create_transporter(name) {
         dkim: {
             domainName: process.env.DNS,
             keySelector: process.env.MAIL_DKIM_SELECTOR,
-            privateKey: fs.readFileSync(dkimKeysPath + '/dkim-private.key', "utf8")
+            privateKey: fs.readFileSync(dkimPrivateKeyPath, "utf8")
         }
     })
 

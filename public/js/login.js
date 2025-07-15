@@ -106,4 +106,10 @@ function logout(){
 
 function signin(){
     event.preventDefault()
+
+    const elementUser = document.querySelector("#signin_user")
+    const elementPass = document.querySelector("#signin_pass")
+    const elementConfirmPass = document.querySelector("#signin_confirm_pass")
+    const elementEmail = document.querySelector("#signin_email")
+    const elementRemember = document.querySelector("#signin_remember")
 }
