@@ -15,8 +15,20 @@ const port = process.env.PORT
 const app = express()
 app.use(express.json())
 
-// Importar módulo multilang
+// Crear servidor HTTP
+const server = http.createServer(app)
+
+// Exportar app y servidor
+module.exports = { app, server }
+
+// Importar módulos necesarios
+require(path.join(__dirname,'..','..','database','js','database.js'))
 require(path.join(__dirname,'..','..','multilang','js','multilang.js'))
+require(path.join(__dirname,'..','..','mail','js','mail.js'))
+require(path.join(__dirname,'..','..','api','js','api.js'))
+require(path.join(__dirname,'..','..','session','js','session.js'))
+require(path.join(__dirname,'..','..','stripe','js','stripe.js'))
+require(path.join(__dirname,'..','..','socketio','js','socketio.js'))
 
 // Servir archivos dinámicos desde la carpeta public
 app.get('/', (request, response) => { 
@@ -42,19 +54,6 @@ app.get('/', (request, response) => {
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(path.join(__dirname, '..', '..', '..', 'public'))) 
-
-// Crear servidor HTTP
-const server = http.createServer(app)
-
-// Exportar app y servidor
-module.exports = { app, server }
-
-// Importar módulos necesarios
-require(path.join(__dirname,'..','..','mail','js','mail.js'))
-require(path.join(__dirname,'..','..','database','js','database.js'))
-require(path.join(__dirname,'..','..','api','js','api.js'))
-require(path.join(__dirname,'..','..','stripe','js','stripe.js'))
-require(path.join(__dirname,'..','..','socketio','js','socketio.js'))
 
 // Arrancar servidor
 server.listen(port, () => {

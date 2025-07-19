@@ -1,0 +1,19 @@
+// queries.js
+const path = require('path')
+const { pool } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
+
+exports.updateLanguage = async (username, language) => {
+    const response = await pool.query(
+        `UPDATE users
+        SET language = $2
+        WHERE username = $1`,
+        [username, language]
+    )
+
+    if (response.rowCount === 0) {
+        console.log(`usuario "${username}" no encontrado o no se pudo actualizar el idioma`)
+        return null
+    }
+
+    return "ok"
+}

@@ -1,6 +1,14 @@
 function set_language(lang = "es"){
 
     let sessionCookie = get_cookie("montarazSession")
+    let jsonLang = {}
+
+    const elementsLang = document.querySelectorAll("*[mlang]")
+
+    for(let indexElements = 0 ; indexElements < elementsLang.length ; indexElements++){
+        const element = elementsLang[indexElements]
+        jsonLang[element.getAttribute("mlang").split(";")[1]]
+    }
 
     const url = `/api/language/set`
     const headers = sessionCookie ? {
