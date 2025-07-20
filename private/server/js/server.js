@@ -30,10 +30,13 @@ require(path.join(__dirname,'..','..','session','js','session.js'))
 require(path.join(__dirname,'..','..','stripe','js','stripe.js'))
 require(path.join(__dirname,'..','..','socketio','js','socketio.js'))
 
+const { translate } = require(path.join(__dirname,'..','..','multilang','js','functions.js'))
+
 // Servir archivos dinámicos desde la carpeta public
 app.get('/', (request, response) => { 
 
-    const language = request.headers['accept-language']
+    // TO-DO: Obtener el idioma de sesión si existe, si no existe, de cookie, si no existe, del header
+    const language = request.headers.cookie.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1] || request.headers['accept-language'].split(";")[0].split(",")[1] || 'es'
 
     console.log(`Petición recibida en: ${language}`)
 
@@ -43,9 +46,7 @@ app.get('/', (request, response) => {
             return response.status(500).send('Error leyendo el archivo')
         }
 
-        // Reemplazar palabras clave
-        // TO-DO: Hacer api para reemplazar palabras clave
-        const replacedHtml = html.replaceAll("[mlang:name]", 'Juan')
+        const replacedHtml = translate(language, html)
 
         response.set('Content-Type', 'text/html')
         response.send(replacedHtml)

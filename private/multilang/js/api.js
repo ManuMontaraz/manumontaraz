@@ -1,7 +1,7 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
 const { app } = require(path.join(__dirname,'..','..','server','js','server.js'))
-const { /*get_translation, */update_language } = require(path.join(__dirname,'functions.js'))
+const { /*get_translation, */translate, update_language } = require(path.join(__dirname,'functions.js'))
 
 app.get('/api/language',(request, response) => { 
     
@@ -18,6 +18,7 @@ app.post('/api/language/set',(request, response) => {
     if(!request.body)return
 
     const queryLang = request.body.lang
+    const queryTranslate = request.body.translate
 
     const token = request.headers.authorization ? request.headers.authorization.split(' ')[1] : null
     
@@ -31,9 +32,11 @@ app.post('/api/language/set',(request, response) => {
         }
     })
 
-    //const translation = get_translation()
+    const translation = translate(queryLang,queryTranslate)
 
-    response.json(`Hola, quieres traducir la web en: [${queryLang}]`)
+    console.log("translation",translation)
+
+    response.json({"translation":translation,"message":`Hola, quieres traducir la web en: [${queryLang}]`})
 
     //const languageFile = get_language_file(language)
 

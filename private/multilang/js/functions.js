@@ -13,7 +13,7 @@ function get_language_file(lang = "es"){
     }
 }
 
-async function update_language(username, language, response){
+async function update_language(username, language){
     const data = await updateLanguage(username, language)
 
     if(data === "ok"){
@@ -25,10 +25,28 @@ async function update_language(username, language, response){
     }else{
         console.error(`Error al actualizar el idioma a [${language}] para el usuario ${username}`)
     }
+    return data
 }
 
-function get_translation(lang = "es"){
+function translate(lang = "es", find){
+    const replace = get_language_file(lang)
 
+    if(!find)return false
+    
+    if(typeof find === 'string'){
+        for(let indexReplace = 0 ; indexReplace < Object.entries(replace).length ; indexReplace++){
+            const [key, value] = Object.entries(replace)[indexReplace]
+            find = find.replaceAll(`[mlang:${key}]`, value)
+        }
+    }else if(typeof find === 'object' && Array.isArray(find)){
+        const objectFind = {}
+        for(let indexFind = 0 ; indexFind < find.length ; indexFind++){
+            const item = Object.entries(replace).find(key => key[0] === find[indexFind])
+            objectFind[item[0]] = item[1]
+        }
+        find = objectFind
+    }
+    return find
 }
 
-module.exports = { get_language_file, get_translation, update_language }
+module.exports = { get_language_file, update_language, translate }
