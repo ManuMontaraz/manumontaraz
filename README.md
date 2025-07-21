@@ -36,8 +36,8 @@
 1. Instala Git, Node.js® y PostgreSQL:
 
     Debian:
-        sudo apt update
-        sudo apt install git nodejs npm postgresql postgresql-contrib
+        > sudo apt update
+        > sudo apt install git nodejs npm postgresql postgresql-contrib
 
 2. Clona el repositorio:
 
