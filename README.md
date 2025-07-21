@@ -14,13 +14,16 @@
 
 ## 🧰 Tecnologías usadas
 
-- **Backend**: [Node.js](https://nodejs.org/)
+- **Backend**: 
+  - [Node.js](https://nodejs.org/)
+  - [PostgreSQL](https://www.postgresql.org/)
+
 - **Dependencias**:
   - [`express`](https://www.npmjs.com/package/express)
   - [`dotenv`](https://www.npmjs.com/package/dotenv)
   - [`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
   - [`nodemailer`](https://www.npmjs.com/package/nodemailer)
-  - [`pg`](https://www.npmjs.com/package/pg) (PostgreSQL)
+  - [`pg`](https://www.npmjs.com/package/pg)
   - [`socket.io`](https://www.npmjs.com/package/socket.io)
   - [`stripe`](https://www.npmjs.com/package/stripe)
   - [`nodemon`](https://www.npmjs.com/package/nodemon) (dev only)
