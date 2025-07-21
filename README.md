@@ -17,8 +17,11 @@
 - **Backend**: 
   - [Node.js](https://nodejs.org/)
   - [PostgreSQL](https://www.postgresql.org/)
+  
+- **Frontend**: 
+  - [PRONTO]
 
-- **Dependencias**:
+- **Dependencias Node**:
   - [`express`](https://www.npmjs.com/package/express)
   - [`dotenv`](https://www.npmjs.com/package/dotenv)
   - [`jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
