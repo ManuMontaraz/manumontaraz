@@ -40,8 +40,16 @@ function set_language(lang = "es"){
             const element = elementsLang[indexElements]
             const elementAttribute = element.getAttribute("mlang").split(";")
             if(data.translation[elementAttribute[1]]){
-                if(elementAttribute[0] === "text"){
-                    element.innerText = data.translation[elementAttribute[1]]
+                switch(elementAttribute[0]){
+                    case "text":
+                        element.innerText = data.translation[elementAttribute[1]]
+                    break
+                    case "value":
+                        element.value = data.translation[elementAttribute[1]]
+                    break
+                    case "placeholder":
+                        element.setAttribute("placeholder",data.translation[elementAttribute[1]])
+                    break
                 }
             }
         }

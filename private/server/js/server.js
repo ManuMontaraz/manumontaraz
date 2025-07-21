@@ -30,13 +30,13 @@ require(path.join(__dirname,'..','..','session','js','session.js'))
 require(path.join(__dirname,'..','..','stripe','js','stripe.js'))
 require(path.join(__dirname,'..','..','socketio','js','socketio.js'))
 
-const { translate } = require(path.join(__dirname,'..','..','multilang','js','functions.js'))
+const { translate, get_language } = require(path.join(__dirname,'..','..','multilang','js','functions.js'))
 
 // Servir archivos dinámicos desde la carpeta public
-app.get('/', (request, response) => { 
-
+app.get('/', async (request, response) => { 
+    
     // TO-DO: Obtener el idioma de sesión si existe, si no existe, de cookie, si no existe, del header
-    const language = request.headers.cookie.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1] || request.headers['accept-language'].split(";")[0].split(",")[1] || 'es'
+    const language = await get_language(request.headers.cookie) || "es"//request.headers.cookie.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1] || request.headers['accept-language'].split(";")[0].split(",")[1] || 'es'
 
     console.log(`Petición recibida en: ${language}`)
 

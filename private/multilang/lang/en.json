@@ -1,3 +1,23 @@
 {
-    "name": "John"
+    "in_dev": "IN DEVELOPMENT",
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "testing": "Testing",
+    "shop": "Shop",
+    "user_or_mail": "User or mail",
+    "password": "Password",
+    "remember": "Remember me",
+    "forgot_password": "Forgot your password?",
+    "reset_password": "Reset Password",
+    "reset_password_desc": "Enter your email to reset your password.",
+    "name": "Name",
+    "last_name": "Last Name",
+    "username": "Username",
+    "email": "Email",
+    "confirm_password": "Confirm Password",
+    "accept_terms": "Accept Terms and Conditions",
+    "subscribe": "Subscribe to our newsletter",
+    "status": "Status",
+    "test_api": "Test API"
 }

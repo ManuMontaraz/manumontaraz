@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
-const { updateLanguage } = require(path.join(__dirname, 'queries.js'))
+const jwt = require('jsonwebtoken')
+const { updateLanguage, getLanguage } = require(path.join(__dirname, 'queries.js'))
 
 function get_language_file(lang = "es"){
     const filePath = path.join(__dirname, '..', 'lang', `${lang}.json`)
@@ -11,6 +12,38 @@ function get_language_file(lang = "es"){
         console.error(`El archivo de idioma ${lang} no existe.`)
         return {}
     }
+}
+
+async function get_language(cookies){
+
+    let language = "es" // Idioma por defecto
+    if(cookies){
+        console.log("cookies",cookies)
+
+        let session
+        if(cookies.split(";").find(cookie => cookie.trim().startsWith("montarazSession="))){
+            session = cookies.split(";").find(cookie => cookie.trim().startsWith("montarazSession=")).split("=")[1]
+
+            await jwt.verify(session, process.env.JWT_SECRET, async (error, authData) => {
+                if(error){
+                    console.log('Token inválido:', error)
+                }
+                const data = await getLanguage(authData.user)
+
+                if(data) language = data
+            })
+        }
+
+        if(cookies.split(";").find(cookie => cookie.trim().startsWith("language="))){
+            language = cookies.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1]
+        }
+    }
+    // TO-DO: Obtener el idioma de sesión si existe, si no existe, de cookie, si no existe, del header
+    
+
+    console.log(`Idioma obtenido: ${language}`)
+
+    return language
 }
 
 async function update_language(username, language){
@@ -49,4 +82,4 @@ function translate(lang = "es", find){
     return find
 }
 
-module.exports = { get_language_file, update_language, translate }
+module.exports = { get_language_file, get_language, update_language, translate }

@@ -14,49 +14,48 @@
         <script src="socket.io/socket.io.js"></script>
     </head>
     <body >
-        <h1>EN DESARROLLO</h1>
+        <h1 mlang="text;in_dev">[mlang:in_dev]</h1>
         <section id="language">
             <button onclick='set_language("es")'>ES</button>
             <button onclick='set_language("en")'>EN</button>
         </section>
         <section id="login">
-            <h2>Login</h2>
+            <h2 mlang="text;login">[mlang:login]</h2>
             <form>
-                <input type="text" id="login_user" placeholder="usuario/email"/>
-                <input type="password" id="login_pass" placeholder="contraseña" autocomplete="on"/>
-                <label for="login_remember">Recordarme</label>
+                <input type="text" id="login_user" placeholder="[mlang:user_or_mail]" mlang="placeholder;user_or_mail"/>
+                <input type="password" id="login_pass" placeholder="[mlang:password]" autocomplete="on" mlang="placeholder;password"/>
+                <label for="login_remember" mlang="text;remember">[mlang:remember]</label>
                 <input type="checkbox" id="login_remember"/>
-                <button onclick='login()'>Login</button>
-                <button onclick='logout()'>Salir</button>
+                <button onclick='login()' mlang="text;login">[mlang:login]</button>
+                <button onclick='logout()' mlang="text;logout">[mlang:logout]</button>
             </form>
         </section>
         <section id="signin">
-            <h2>Registro</h2>
+            <h2 mlang="text;signup">[mlang:signup]</h2>
             <form>
-                <input type="text" id="signin_name" placeholder="nombre"/>
-                <input type="text" id="signin_last_name" placeholder="apellidos"/>
-                <input type="text" id="signin_user" placeholder="usuario"/>
-                <input type="email" id="signin_email" placeholder="email"/>
-                <input type="password" id="signin_pass" placeholder="contraseña" autocomplete="on"/>
-                <input type="password" id="signin_confirm_pass" placeholder="repite contraseña" autocomplete="off"/>
-                <label for="signin_remember">Recordarme</label>
+                <input type="text" id="signin_name" placeholder="[mlang:name]" mlang="placeholder;name"/>
+                <input type="text" id="signin_last_name" placeholder="[mlang:last_name]" mlang="placeholder;last_name"/>
+                <input type="text" id="signin_user" placeholder="[mlang:username]" mlang="placeholder;username"/>
+                <input type="email" id="signin_email" placeholder="[mlang:email]" mlang="placeholder;email"/>
+                <input type="password" id="signin_pass" placeholder="[mlang:password]" autocomplete="on" mlang="placeholder;password"/>
+                <input type="password" id="signin_confirm_pass" placeholder="[mlang:confirm_password]" autocomplete="off" mlang="placeholder;confirm_password"/>
+                <label for="signin_remember" mlang="text;remember">[mlang:remember]</label>
                 <input type="checkbox" id="signin_remember"/>
-                <label for="signin_terms">Aceptar Términos</label>
+                <label for="signin_terms" mlang="text;accept_terms">[mlang:accept_terms]</label>
                 <input type="checkbox" id="signin_terms"/>
-                <label for="signin_newsletter">Suscribir a newsletter</label>
+                <label for="signin_newsletter" mlang="text;subscribe">[mlang:subscribe]</label>
                 <input type="checkbox" id="signin_newsletter"/>
-                <button onclick='signin()'>Registrarse</button>
+                <button onclick='signin()' mlang="text;signup">[mlang:signup]</button>
             </form>
         </section>
         <section id="testing">
-            <h2>Testing</h2>
+            <h2 mlang="text;testing">[mlang:testing]</h2>
             <textarea id="log" rows="10" cols="50"></textarea>
-            <p mlang="text;name">[mlang:name]</p>
-            <a href="/api/status">Estado</a>
-            <button href="/api" onclick='test_api()'>Test api</button>
+            <a href="/api/status" mlang="text;status">[mlang:status]</a>
+            <button href="/api" onclick='test_api()' mlang="text;test_api">[mlang:test_api]</button>
         </section>
         <section id="shop">
-            <h2>Tienda</h2>
+            <h2 mlang="text;shop">[mlang:shop]</h2>
         </section>
     </body>
 </html>

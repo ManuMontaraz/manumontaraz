@@ -1,3 +1,23 @@
 {
-    "name": "Juan"
+    "in_dev": "EN DESARROLLO",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "signup": "Crear cuenta",
+    "testing": "Pruebas",
+    "shop": "Tienda",
+    "user_or_mail": "Usuario o correo electrónico",
+    "password": "Contraseña",
+    "remember": "Recordarme",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "reset_password": "Restablecer contraseña",
+    "reset_password_desc": "Introduce tu correo electrónico para restablecer tu contraseña.",
+    "name": "Nombre",
+    "last_name": "Apellidos",
+    "username": "Usuario",
+    "email": "Correo electrónico",
+    "confirm_password": "Confirmar contraseña",
+    "accept_terms": "Aceptar términos y condiciones",
+    "subscribe": "Suscribirse a nuestro boletín",
+    "status": "Estado",
+    "test_api": "Probar API"
 }
