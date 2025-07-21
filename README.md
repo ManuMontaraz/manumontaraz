@@ -37,6 +37,7 @@
 
     Debian:
     > sudo apt update
+    
     > sudo apt install git nodejs npm postgresql postgresql-contrib
 
 2. Clona el repositorio:
