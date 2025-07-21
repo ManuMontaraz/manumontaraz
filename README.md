@@ -60,12 +60,12 @@
 
 ## 📖 Documentación
 
-    Próximamente se publicará documentación más detallada sobre cómo extender la tienda, agregar productos, configurar idiomas y más.
+Próximamente se publicará documentación más detallada sobre cómo extender la tienda, agregar productos, configurar idiomas y más.
 
 ## 🛡️ Licencia
 
-    Este proyecto está licenciado bajo la <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU Affero General Public License v3.0 (AGPL-3.0)</a>. Esto significa que cualquier mejora que hagas y publiques debe mantenerse también abierta.
+Este proyecto está licenciado bajo la [`GNU Affero General Public License v3.0 (AGPL-3.0)`](https://www.gnu.org/licenses/agpl-3.0.html). Esto significa que cualquier mejora que hagas y publiques debe mantenerse también abierta.
 
 ## 💡 ¿Quieres contribuir o tienes sugerencias?
 
-    ¡Los pull requests y issues son bienvenidos!
+¡Los pull requests y issues son bienvenidos!
