@@ -1,4 +1,4 @@
-// queries.js t
+// queries.js
 const path = require('path')
 const { pool } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
 
