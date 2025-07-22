@@ -6,6 +6,7 @@ const path = require('path')
 const express = require('express')
 const dotenv = require('dotenv')
 const http = require('http')
+const rateLimit = require('express-rate-limit')
 
 // Cargar variables de entorno
 dotenv.config()
@@ -13,8 +14,16 @@ dotenv.config()
 // Obtener el puerto del entorno
 const port = process.env.PORT
 
+// Configurar limitador de peticiones
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutos
+    max: 100, // Limitar cada IP a 100 peticiones por ventana
+    message: 'Demasiadas peticiones, por favor intente de nuevo más tarde.'
+})
+
 // Crear app Express
 const app = express()
+app.use(limiter)
 app.use(express.json())
 
 // Crear servidor HTTP
