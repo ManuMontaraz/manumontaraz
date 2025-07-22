@@ -1,4 +1,4 @@
-// Copyright (C) 2025 Manu Montaraz
+// Copyright (C) 2025 Manu Montaraz 
 
 // server.js
 const fs = require('fs');
