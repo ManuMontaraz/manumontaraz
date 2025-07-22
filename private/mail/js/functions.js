@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const { generateKeyPairSync } = require('crypto')
 const mail = require('nodemailer')
+const { translate } = require(path.join(__dirname, '..', '..', 'multilang', 'js', 'functions.js'))
 
 const dkimKeysPath = path.join(__dirname, '..', 'keys')
 const dkimPrivateKeyPath = path.join(dkimKeysPath, 'dkim-private.key')
@@ -78,9 +79,49 @@ function create_transporter(name) {
     return objectTransporter
 }
 
-async function send_mail(from, to, subject, text) {
+function send_mail(template, to, language = "es", extraData = {}) {
 
-    if (!from || !to || !subject || !text)return console.error('Missing required parameters for send_mail')
+    let from, subject, message
+
+    const filePath = path.join(__dirname, '..', 'html', `${template}.html`)
+
+    switch (template) {
+        case "signup":
+
+            const html = fs.readFileSync(filePath, 'utf8')
+
+            console.log("html:",html)
+
+            from = "noreply"
+            subject = translate(language, "[mlang:mail_signup_subject]")
+            message = translate(language, html)
+
+            //from = "noreply"
+            //subject = "Bienvenido a Manu Montaraz"
+            //message = "<h1>Gracias por registrarte en Manu Montaraz.</h1> Estamos encantados de tenerte con nosotros. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos."
+        break
+        default:
+            console.error(`No se encontró el template "${template}"`)
+            return false
+    }
+
+    //console.log("extraData",extraData)
+    if(Object.entries(extraData).length > 0) {
+        const extraDataEntries = Object.entries(extraData)
+        for(let indexExtraData = 0 ; indexExtraData < extraDataEntries.length ; indexExtraData++) {
+            const [key, value] = extraDataEntries[indexExtraData]
+            console.log(`Reemplazando [${key}] por ${value} en el mensaje`)
+            message = message.replaceAll(`[${key}]`, value)
+        }
+    }
+
+    console.log(from, to, subject, message)
+    send_custom_mail(from, to, subject, message)
+}
+
+async function send_custom_mail(from, to, subject, message) {
+
+    if (!from || !to || !subject || !message)return console.error('Missing required parameters for send_mail')
 
     const email = emails.find(email => email.name === from)
 
@@ -106,7 +147,7 @@ async function send_mail(from, to, subject, text) {
         from: from,
         to: to,
         subject: subject,
-        text: text
+        html: message
     }
 
     try {
@@ -117,4 +158,4 @@ async function send_mail(from, to, subject, text) {
     }
 }
 
-module.exports = { check_dkim_keys, send_mail }
+module.exports = { check_dkim_keys, send_mail, send_custom_mail }

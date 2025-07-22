@@ -1,7 +1,7 @@
 const path = require('path')
 const { app } = require(path.join(__dirname,'..','..','server','js','server.js'))
 const { verify_token } = require(path.join(__dirname,'..','..','database','js','database.js'))
-const { login, logout, signin } = require(path.join(__dirname,'functions.js'))
+const { login, logout, signup } = require(path.join(__dirname,'functions.js'))
 
 // Login manual de usuario
 app.post('/api/login',(request, response) => {
@@ -38,7 +38,7 @@ app.post('/api/login/jwt',verify_token,(request, response) => {
 }) 
 
 // Logout de usuario
-app.post('/api/logout',(request, response) => {
+app.post('/api/logout',verify_token,(request, response) => {
     
     if(!request.body)return
     
@@ -50,7 +50,7 @@ app.post('/api/logout',(request, response) => {
 }) 
 
 // Registro de usuario
-app.post('/api/signin',(request, response) => {
+app.post('/api/signup',(request, response) => {
     
     if(!request.body)return
     
@@ -63,10 +63,24 @@ app.post('/api/signin',(request, response) => {
     const queryRemember = request.body.remember
     const queryTerms = request.body.terms
     const queryNewsletter = request.body.newsletter
+    const queryLanguage = request.body.language || "es"
 
     console.log(`usuario "${queryUser}" intentando registrarse`)
 
-    signin(queryUser,queryPass,response)
+    const data = {
+        name: queryName,
+        lastName: queryLastName,
+        user: queryUser,
+        email: queryEmail,
+        pass: queryPass,
+        repeatPass: queryRepeatPass,
+        remember: queryRemember,
+        terms: queryTerms,
+        newsletter: queryNewsletter,
+        language:queryLanguage
+    }
+
+    signup(data,response)
 }) 
 
 console.log("API de sesión cargada")

@@ -34,7 +34,7 @@ app.post('/api/language/set',(request, response) => {
 
     const translation = translate(queryLang,queryTranslate)
 
-    console.log("translation",translation)
+    //console.log("translation",translation)
 
     response.json({"translation":translation,"message":`Hola, quieres traducir la web en: [${queryLang}]`})
 

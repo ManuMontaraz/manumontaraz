@@ -50,4 +50,4 @@ function verify_token(request, response, next) {
     }
 }
 
-module.exports = { pool, /*login, logout, signin, */verify_token, hash_password, verify_password }
+module.exports = { pool, /*login, logout, signup, */verify_token, hash_password, verify_password }

@@ -71,7 +71,12 @@ function login(){
             body: body
         }
     ).then(response=>response.json()).then(token=>{
+        console.log("token",token)
+        const language = token.language || "es"
         document.querySelector("#log").innerText = JSON.stringify(token)
+        if(language != get_cookie("language")){
+            set_language(language)
+        }
     })
 }
 
@@ -104,12 +109,62 @@ function logout(){
     })
 }
 
-function signin(){
+function signup(){
     event.preventDefault()
 
-    const elementUser = document.querySelector("#signin_user")
-    const elementPass = document.querySelector("#signin_pass")
-    const elementConfirmPass = document.querySelector("#signin_confirm_pass")
-    const elementEmail = document.querySelector("#signin_email")
-    const elementRemember = document.querySelector("#signin_remember")
+    const elementName = document.querySelector("#signup_name")
+    const elementLastName = document.querySelector("#signup_last_name")
+    const elementUser = document.querySelector("#signup_user")
+    const elementEmail = document.querySelector("#signup_email")
+    const elementPass = document.querySelector("#signup_pass")
+    const elementConfirmPass = document.querySelector("#signup_confirm_pass")
+    const elementRemember = document.querySelector("#signup_remember")
+    const elementTerms = document.querySelector("#signup_terms")
+    const elementNewsletter = document.querySelector("#signup_newsletter")
+    const language = get_cookie("language") || "es"
+
+    if (!elementName.value || !elementLastName.value || !elementUser.value || !elementEmail.value || !elementPass.value || !elementConfirmPass.value) {
+        document.querySelector("#log").innerText = "Por favor, completa todos los campos."
+        return
+    }
+    if (elementPass.value !== elementConfirmPass.value) {
+        document.querySelector("#log").innerText = "Las contraseñas no coinciden."
+        return
+    }
+    if (!elementTerms.checked) {
+        document.querySelector("#log").innerText = "Debes aceptar los términos y condiciones."
+        return
+    }
+
+
+    const url = "/api/signup"
+
+    const headers = {
+        "Content-Type": "application/json; charset=utf-8"
+    }
+    const body = JSON.stringify({
+        name: elementName.value,
+        lastName: elementLastName.value,
+        user: elementUser.value,
+        email: elementEmail.value,
+        pass: elementPass.value,
+        repeatPass: elementConfirmPass.value,
+        remember: elementRemember.checked,
+        terms: elementTerms.checked,
+        newsletter: elementNewsletter.checked,
+        language: language
+    })
+
+    document.querySelector("#log").innerText = "Creando una nueva cuenta..."
+
+    fetch(
+        url,
+        {
+            method: "POST",
+            headers: headers,
+            body: body
+        }
+    ).then(response=>response.json()).then(response=>{
+        console.log("response",response)
+    })
 }

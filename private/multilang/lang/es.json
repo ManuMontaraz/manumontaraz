@@ -19,5 +19,7 @@
     "accept_terms": "Aceptar términos y condiciones",
     "subscribe": "Suscribirse a nuestro boletín",
     "status": "Estado",
-    "test_api": "Probar API"
+    "test_api": "Probar API",
+    "mail_signup_subject": "Bienvenida de Manu Montaraz",
+    "mail_signup_salute": "¡Hola, [name]!"
 }

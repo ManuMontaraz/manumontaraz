@@ -1,10 +1,19 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
-const { getUserByUsernameOrEmail } = require(path.join(__dirname, 'queries.js'))
-const { verify_password } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
+const { send } = require('process')
+const { getUserByUsernameOrEmail, signupUser } = require(path.join(__dirname, 'queries.js'))
+const { verify_password, hash_password } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
+const { send_mail } = require(path.join(__dirname, '..', '..', 'mail', 'js', 'functions.js'))
 
 
 function logout(username, response) {
+    
+    if (!username) {
+        console.log('No se proporcionó un usuario para cerrar sesión')
+        return response.status(400).json({ message: 'Usuario no proporcionado' })
+    }
+
+    //TO-DO: Verificar si el usuario está autenticado y es el mismo antes de cerrar sesión
     console.log(`usuario "${username}" cerró sesión correctamente`)
     response.setHeader('Set-Cookie', 'montarazSession=; Path=/; Max-Age=0; SameSite=Strict') // Elimina la cookie de sesión
     return response.json({ message: 'Sesión cerrada correctamente' })
@@ -55,11 +64,59 @@ async function login(data, response) {
         console.log(`usuario "${username}" inició sesión correctamente`)
         
         response.setHeader('Set-Cookie', `montarazSession=${token}; Path=/; Max-Age=${remember?'604800':'3600'}; SameSite=Strict`)
-        response.json({token, name:user.name, last_name:user.last_name, message: 'Inicio de sesión correcto'})
+        response.json({token, name:user.name, last_name:user.last_name, message: 'Inicio de sesión correcto', language: user.language || 'es' }) // Devuelve el token y el nombre del usuario
     })
 }
 
-function signin(){
+async function signup(data, response){
+
+    if (!data || !data.user || !data.email || !data.pass || !data.repeatPass || !data.terms) {
+        console.log('Datos de registro incompletos')
+        return response.status(400).json({ message: 'Datos de registro incompletos' })
+    }
+
+    if (data.pass !== data.repeatPass) {
+        console.log('Las contraseñas no coinciden')
+        return response.status(400).json({ message: 'Las contraseñas no coinciden' })
+    }
+
+    if (!data.terms) {
+        console.log('Debe aceptar los términos y condiciones')
+        return response.status(400).json({ message: 'Debe aceptar los términos y condiciones' })
+    }
+
+    const existingUser = await getUserByUsernameOrEmail(data.user)
+    const existingEmail = await getUserByUsernameOrEmail(data.email)
+
+    if ((existingUser && existingUser.length > 0) || (existingEmail && existingEmail.length > 0)) {
+        console.log(`El usuario "${data.user}" ya existe`)
+        return response.status(409).json({ message: 'El usuario ya existe' })
+    }
+
+    const hashPassword = hash_password(data.password)
+
+    const newUser = {
+        username: data.user,
+        email: data.email,
+        password: hashPassword.hash,
+        password_salt: hashPassword.salt,
+        name: data.name || '',
+        last_name: data.lastName || '',
+        terms: data.terms,
+        newsletter: data.newsletter || false,
+        language: data.language || 'es'
+    }
+
+    const result = await signupUser(newUser)
+
+    if (result === 'ok') {
+        console.log(`usuario "${data.user}" registrado correctamente`)
+        response.json({ message: 'Registro exitoso, revisa tu correo electrónico para confirmar tu cuenta' })
+
+        // Enviar correo de bienvenida
+        send_mail('signup', data.email, data.language, {"name":data.name})
+    }
+
     /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE
     const passwordCosa = hash_password(password)
     console.log("passwordCosa",passwordCosa)
@@ -77,4 +134,4 @@ function signin(){
     */
 }
 
-module.exports = { login, logout, signin }
+module.exports = { login, logout, signup }
