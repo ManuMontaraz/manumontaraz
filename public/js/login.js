@@ -166,5 +166,6 @@ function signup(){
         }
     ).then(response=>response.json()).then(response=>{
         console.log("response",response)
+        document.querySelector("#log").innerText = JSON.stringify(response)
     })
 }

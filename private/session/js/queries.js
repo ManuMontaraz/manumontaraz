@@ -22,13 +22,13 @@ exports.getUserByUsernameOrEmail = async (usernameOrEmail) => {
 }
 
 exports.signupUser = async (userData) => {
-    const { username, name, lastName, email, password, passwordSalt, language } = userData
 
     const response = await pool.query(
         `INSERT INTO users (username, name, last_name, email, password, password_salt, language)
         VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ON CONFLICT (username) DO NOTHING
         RETURNING username`,
-        [username, name, lastName, email, password, passwordSalt, language]
+        [userData.username, userData.name, userData.lastName, userData.email, userData.password, userData.passwordSalt, userData.language]
     )
 
     if (response.rowCount === 0) {

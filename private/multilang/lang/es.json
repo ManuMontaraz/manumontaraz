@@ -20,6 +20,14 @@
     "subscribe": "Suscribirse a nuestro boletín",
     "status": "Estado",
     "test_api": "Probar API",
-    "mail_signup_subject": "Bienvenida de Manu Montaraz",
-    "mail_signup_salute": "¡Hola, [name]!"
+    "mail_signup_subject": "¡[web_name] te da la bienvenida!",
+    "mail_signup_salute": "¡Hola, [name]!",
+    "mail_signup_text": "Gracias por registrarte en [web_name], un espacio creado para quienes disfrutan de la naturaleza, la tecnología y las aventuras con responsabilidad.",
+    "mail_signup_text2": "Aquí podrás encontrar artesanías sostenibles hechas con materiales reciclados, gadgets ingeniosos y equipamiento que conecte contigo y con la naturaleza. Además, podrás seguirme en mis aventuras por el mundo, donde compartiré mis experiencias y descubrimientos.",
+    "mail_signup_text3": "Solo debes confirmar tu cuenta para comenzar tu viaje.*",
+    "mail_signup_button": "¡Comenzar el viaje!",
+    "mail_signup_text4": "*click en el botón para confirmar tu cuenta",
+    "mail_signup_text5": "Con 💚, [author].",
+    "mail_signup_text6": "Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarme a través de mis redes sociales o directamente por correo electrónico a <a href='mailto:[contact_email]'>[contact_email]</a>.",
+    "mail_signup_text7": "Si no has solicitado este registro, puedes ignorar este correo."
 }

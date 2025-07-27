@@ -1,1 +1,55 @@
-<h1>[mlang:mail_signup_salute]</h1>
+<!-- COMPATIBILIDAD CON CLIENTES DE CORREO:
+ESTILOS INLINE, HOVERS COMO COMPLEMENTO (gmail no es compatible)
+ANIMACIONES CON GIFS Y NADA DE MEDIA QUERIES (gmail y outlook no son compatibles)
+EVITAR GRID Y FLEX, USAR TABLAS EN SU LUGAR-->
+<style>
+    body{
+        padding:.125rem;
+        margin:0;
+    }
+    small{
+        color:gray;
+        display: block;
+    }
+    .container{
+        width:calc(100% - 6rem);
+        margin:2rem;
+        background-color:gainsboro;
+        padding:1rem;
+        border-radius:1rem;
+        text-wrap-style: balance;
+    }
+    .button{
+        background-color: white;
+        padding: 0.5rem;
+        margin:auto;
+        border-radius: 1rem;
+        text-decoration: none;
+        font-size: large;
+        font-weight: bold;
+    }
+    .center{
+        text-align: center;
+    }
+    .right{
+        text-align: right;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <h1>[mlang:mail_signup_salute]</h1>
+        <p>[mlang:mail_signup_text]</p>
+        <p>[mlang:mail_signup_text2]</p>
+        <p>[mlang:mail_signup_text3]</p>
+        <p class="center">
+            <a class="button" href="[link]">[mlang:mail_signup_button]</a>
+        </p>
+        <small class="center">[mlang:mail_signup_text4]</small>
+        <p class="right">[mlang:mail_signup_text5]</p>
+    </div>
+    <div class="container">
+        <p>[mlang:mail_signup_text6]</p>
+        <p>[mlang:mail_signup_text7]</p>
+    </div>
+</body>

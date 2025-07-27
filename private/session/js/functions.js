@@ -70,6 +70,8 @@ async function login(data, response) {
 
 async function signup(data, response){
 
+    console.log("data",data)
+
     if (!data || !data.user || !data.email || !data.pass || !data.repeatPass || !data.terms) {
         console.log('Datos de registro incompletos')
         return response.status(400).json({ message: 'Datos de registro incompletos' })
@@ -93,7 +95,9 @@ async function signup(data, response){
         return response.status(409).json({ message: 'El usuario ya existe' })
     }
 
-    const hashPassword = hash_password(data.password)
+    const hashPassword = hash_password(data.pass)
+
+    console.log("hashPassword",hashPassword)
 
     const newUser = {
         username: data.user,
@@ -112,9 +116,21 @@ async function signup(data, response){
     if (result === 'ok') {
         console.log(`usuario "${data.user}" registrado correctamente`)
         response.json({ message: 'Registro exitoso, revisa tu correo electrónico para confirmar tu cuenta' })
+        
+        let link = `https://${process.env.DNS}`
+        if(process.env.SUBDOMAIN){
+            link = `https://${process.env.SUBDOMAIN}.${process.env.DNS}`
+        }
+
+        let contact = `${JSON.parse(process.env.MAIL_ACCOUNTS).contact.user}@${process.env.DNS}` || ""
 
         // Enviar correo de bienvenida
-        send_mail('signup', data.email, data.language, {"name":data.name})
+        send_mail('signup', data.email, data.language, {"name":data.name, "web_name": process.env.NAME, "link":new URL(`/confirm?user=${data.user}&mail=${data.email}`,link), "contact_email":contact, "author": process.env.AUTHOR})
+
+        response.json({ message: 'Usuario registrado correctamente, revisa tu correo para confirmar tu cuenta' })
+    }else{
+        console.log(`Error al registrar el usuario "${data.user}"`)
+        response.status(500).json({ message: 'Error al registrar el usuario' })
     }
 
     /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE

@@ -88,7 +88,14 @@ function send_mail(template, to, language = "es", extraData = {}) {
     switch (template) {
         case "signup":
 
-            const html = fs.readFileSync(filePath, 'utf8')
+            let html = fs.readFileSync(filePath, 'utf8')
+            if (!html){
+                console.error(`No se encontró el archivo de plantilla "${template}" en la ruta: ${filePath}`)
+                return false
+            }
+
+            // Convertir CSS a estilos inline
+            html = css_to_inline(html)
 
             console.log("html:",html)
 
@@ -110,8 +117,9 @@ function send_mail(template, to, language = "es", extraData = {}) {
         const extraDataEntries = Object.entries(extraData)
         for(let indexExtraData = 0 ; indexExtraData < extraDataEntries.length ; indexExtraData++) {
             const [key, value] = extraDataEntries[indexExtraData]
-            console.log(`Reemplazando [${key}] por ${value} en el mensaje`)
+            console.log(`Reemplazando [${key}] por ${value}.`)
             message = message.replaceAll(`[${key}]`, value)
+            subject = subject.replaceAll(`[${key}]`, value)
         }
     }
 
@@ -156,6 +164,62 @@ async function send_custom_mail(from, to, subject, message) {
     } catch (error) {
         console.error('Error sending email:', error)
     }
+}
+
+function css_to_inline(html) {
+  // 1. Extraer el contenido de <style>
+  const styleRegex = /<style[^>]*>([\s\S]*?)<\/style>/i;
+  const match = html.match(styleRegex);
+  if (!match) return html;
+
+  const css = match[1];
+  let htmlSinStyle = html.replace(styleRegex, "");
+
+  // 2. Parsear reglas CSS simples
+  const reglas = css.match(/([^{]+)\{([^}]+)\}/g) || [];
+
+  reglas.forEach(regla => {
+    const [, selector, propiedades] = regla.match(/([^{]+)\{([^}]+)\}/);
+    const estilos = propiedades.trim().replace(/\s+/g, " ");
+
+    // Función para agregar estilos inline al elemento
+    const agregarEstilo = (etiqueta) => {
+      if (/style="/i.test(etiqueta)) {
+        return etiqueta.replace(/style="([^"]*)"/i, (m, estilosPrevios) =>
+          `style="${estilosPrevios.trim()} ${estilos}"`
+        );
+      } else {
+        return `${etiqueta} style="${estilos}"`;
+      }
+    };
+
+    // --- Selector de clase ---
+    if (selector.trim().startsWith(".")) {
+      const clase = selector.trim().slice(1);
+      const regex = new RegExp(`(<[^>]*class=["'][^"']*\\b${clase}\\b[^"']*["'][^>]*)(>)`, "gi");
+      htmlSinStyle = htmlSinStyle.replace(regex, (m, inicio, fin) =>
+        agregarEstilo(inicio) + fin
+      );
+
+    // --- Selector de ID ---
+    } else if (selector.trim().startsWith("#")) {
+      const id = selector.trim().slice(1);
+      const regex = new RegExp(`(<[^>]*id=["']${id}["'][^>]*)(>)`, "gi");
+      htmlSinStyle = htmlSinStyle.replace(regex, (m, inicio, fin) =>
+        agregarEstilo(inicio) + fin
+      );
+
+    // --- Selector por etiqueta ---
+    } else {
+      const tag = selector.trim();
+      const regex = new RegExp(`(<${tag}[^>]*)(>)`, "gi");
+      htmlSinStyle = htmlSinStyle.replace(regex, (m, inicio, fin) =>
+        agregarEstilo(inicio) + fin
+      );
+    }
+  });
+
+  return htmlSinStyle;
 }
 
 module.exports = { check_dkim_keys, send_mail, send_custom_mail }
