@@ -113,9 +113,8 @@ async function signup(data, response){
 
     const result = await signupUser(newUser)
 
-    if (result === 'ok') {
+    if (result.status === 'ok') {
         console.log(`usuario "${data.user}" registrado correctamente`)
-        response.json({ message: 'Registro exitoso, revisa tu correo electrónico para confirmar tu cuenta' })
         
         let link = `https://${process.env.DNS}`
         if(process.env.SUBDOMAIN){
@@ -125,29 +124,24 @@ async function signup(data, response){
         let contact = `${JSON.parse(process.env.MAIL_ACCOUNTS).contact.user}@${process.env.DNS}` || ""
 
         // Enviar correo de bienvenida
-        send_mail('signup', data.email, data.language, {"name":data.name, "web_name": process.env.NAME, "link":new URL(`/confirm?user=${data.user}&mail=${data.email}`,link), "contact_email":contact, "author": process.env.AUTHOR})
+        send_mail(
+            'signup',
+            data.email,
+            data.language,
+            {
+                "name": data.name,
+                "web_name": process.env.SUBDOMAIN ? `${process.env.SUBDOMAIN}.${process.env.DNS}` : process.env.DNS,
+                "link": new URL(`/confirm?code=${result.confirmation_code}`,link),
+                "contact_email": contact,
+                "author": process.env.AUTHOR
+            }
+        )
 
         response.json({ message: 'Usuario registrado correctamente, revisa tu correo para confirmar tu cuenta' })
     }else{
         console.log(`Error al registrar el usuario "${data.user}"`)
         response.status(500).json({ message: 'Error al registrar el usuario' })
     }
-
-    /* REGISTRO (MAS O MENOS) USAR MÁS ADELANTE
-    const passwordCosa = hash_password(password)
-    console.log("passwordCosa",passwordCosa)
-
-    pool.query(
-        `UPDATE users 
-        SET password = $2, password_salt = $3
-        WHERE username = $1`,
-        [
-            username,
-            passwordCosa.hash,
-            passwordCosa.salt
-        ]
-    )
-    */
 }
 
 module.exports = { login, logout, signup }

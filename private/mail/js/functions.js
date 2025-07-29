@@ -151,7 +151,8 @@ async function send_custom_mail(from, to, subject, message) {
         transporter = newEmail.transporter
     }
 
-    const mailOptions = {
+    console.log("llega1")
+    const mailOptions = { 
         from: from,
         to: to,
         subject: subject,
@@ -161,8 +162,10 @@ async function send_custom_mail(from, to, subject, message) {
     try {
         const info = await transporter.sendMail(mailOptions)
         console.log('Email sent:', info.response)
+        return "ok"
     } catch (error) {
         console.error('Error sending email:', error)
+        return "ko"
     }
 }
 
