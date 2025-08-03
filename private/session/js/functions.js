@@ -1,7 +1,7 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
 const { send } = require('process')
-const { getUserByUsernameOrEmail, signupUser } = require(path.join(__dirname, 'queries.js'))
+const { getUserByUsernameOrEmail, signupUser, confirmUser } = require(path.join(__dirname, 'queries.js'))
 const { verify_password, hash_password } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
 const { send_mail } = require(path.join(__dirname, '..', '..', 'mail', 'js', 'functions.js'))
 
@@ -144,4 +144,25 @@ async function signup(data, response){
     }
 }
 
-module.exports = { login, logout, signup }
+async function confirmation(code, response) {
+
+    if (!code) {
+        console.log('Datos de confirmación incompletos')
+        return '[mlang:confirm_message_error]'
+    }
+
+    // TO-DO: Implementar la lógica de confirmación de cuenta
+    console.log(`Confirmando cuenta con código "${code}"`)
+
+    const result = await confirmUser(code)
+
+    console.log(`Resultado de la confirmación:`, result)
+
+    return result.message
+    
+    // Aquí deberías verificar el código y activar la cuenta del usuario
+    // Por ahora, solo devolvemos un mensaje de éxito
+    //response.json({ message: `Cuenta confirmada con código ${code}` })
+}
+
+module.exports = { login, logout, signup, confirmation }

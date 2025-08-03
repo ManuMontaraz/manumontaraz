@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { app } = require(path.join(__dirname,'..','..','server','js','server.js'))
 const { verify_token } = require(path.join(__dirname,'..','..','database','js','database.js'))
-const { login, logout, signup } = require(path.join(__dirname,'functions.js'))
+const { login, logout, signup, confirmation } = require(path.join(__dirname,'functions.js'))
 const { translate, get_language } = require(path.join(__dirname,'..','..','multilang','js','functions.js'))
 
 // Login manual de usuario
@@ -107,27 +107,34 @@ app.get('/confirm',(request, response) => {
 // Servir archivos dinámicos desde la carpeta public
 app.get('/confirm', async (request, response) => { 
 
-    if(!request.query.user || !request.query.mail){
-        return response.status(400).json({ error: "Debes pasar el usuario y el correo como query params 'user' y 'mail'" })
+    const language = await get_language(request.headers.cookie) || "es"
+
+    if(!request.query.code){
+        //return response.status(400).json({ error: translate(language, "[mlang:confirm_message_error]") })
     }
 
-    const user = request.query.user
-    const mail = request.query.mail
+    const code = request.query.code
 
-    console.log(`usuario "${user}" confirmando cuenta con correo ${mail}`)
-    
-    // TO-DO: Obtener el idioma de sesión si existe, si no existe, de cookie, si no existe, del header
-    const language = await get_language(request.headers.cookie) || "es"//request.headers.cookie.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1] || request.headers['accept-language'].split(";")[0].split(",")[1] || 'es'
+    console.log(`confirmando cuenta con código "${code}".`)
 
     console.log(`Petición recibida en: ${language}`)
 
     const filePath = path.join(__dirname, '..', '..', '..', 'public', 'html', 'confirm.html')
-    fs.readFile(filePath, 'utf8', (error, html) => {
+    fs.readFile(filePath, 'utf8', async (error, html) => {
         if (error) {
             return response.status(500).send('Error leyendo el archivo')
         }
 
-        const replacedHtml = translate(language, html)
+        // TO-DO: Aquí debería verificar el código de confirmación y activar la cuenta del usuario
+        const message = await translate(language,await confirmation(code))
+
+        console.log(`Resultado de la confirmación2:`, message)
+
+        let replacedHtml = await translate(language, html)
+        replacedHtml = replacedHtml.replaceAll("[confirm:message]", message)
+
+        
+        
 
         response.set('Content-Type', 'text/html')
         response.send(replacedHtml)

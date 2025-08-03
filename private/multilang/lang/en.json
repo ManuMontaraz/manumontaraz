@@ -20,6 +20,18 @@
     "subscribe": "Subscribe to our newsletter",
     "status": "Status",
     "test_api": "Test API",
-    "mail_signup_subject": "Welcome to Manu Montaraz",
-    "mail_signup_salute": "Hi, [name]!"
+    "mail_signup_subject": "Welcome to [web_name]!",
+    "mail_signup_salute": "Hello, [name]!",
+    "mail_signup_text": "Thank you for registering at [web_name], a space created for those who enjoy nature, technology, and adventures with responsibility.",
+    "mail_signup_text2": "Here you will find like-minded people, games to motivate you to start your own adventure, and sustainable crafts made from recycled materials. You can also follow me on my adventures around the world, where I will share my experiences and discoveries.",
+    "mail_signup_text3": "You just need to confirm your account to start your journey.*",
+    "mail_signup_button": "Start the journey!",
+    "mail_signup_text4": "*Click the button to confirm your account",
+    "mail_signup_text5": "With 💚, [author].",
+    "mail_signup_text6": "Do not reply to this email. If you have any questions, feel free to contact me through my social networks or directly by email at <a href='mailto:[contact_email]'>[contact_email]</a>.",
+    "mail_signup_text7": "If you did not request this registration, you can ignore this email.",
+    "confirm_title": "Account Confirmation",
+    "confirm_message_error": "Code not found. Redirecting...",
+    "confirm_message_ok": "User successfully confirmed. Redirecting...",
+    "confirm_message_ko": "Invalid or already confirmed code. Redirecting..."
 }

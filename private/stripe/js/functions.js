@@ -8,9 +8,9 @@ async function get_stripe_products(response) {
             limit: 3,
         })
 
-        products.data[1].metadata.precio = await stripe.prices.retrieve(products.data[1].default_price)
+        //products.data[1].metadata.precio = await stripe.prices.retrieve(products.data[1].default_price)
 
-        response.json(products.data[1])
+        response.json(products.data/*[1]*/)
 
     } catch (error) {
         response.status(400).send({ error: error.message })

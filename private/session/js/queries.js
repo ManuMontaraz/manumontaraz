@@ -37,8 +37,7 @@ exports.signupUser = async (userData) => {
             )
             SELECT u.id, c.confirmation_code
             FROM inserted_user u
-            JOIN inserted_confirmation c ON u.id = c.id_user;
-            `,
+            JOIN inserted_confirmation c ON u.id = c.id_user;`,
             [userData.username, userData.name, userData.last_name, userData.email, userData.password, userData.password_salt, userData.language]
         )
 
@@ -56,5 +55,32 @@ exports.signupUser = async (userData) => {
         // Otros errores inesperados
         //throw error;
         return {"status":"ko", "message":"Error al registrar el usuario. Por favor, inténtalo de nuevo más tarde."}
+    }
+}
+
+exports.confirmUser = async (confirmationCode) => {
+    try {
+        const response = await pool.query(
+            `UPDATE users AS u
+                SET confirmed = TRUE
+            FROM confirmation_users AS cu
+            WHERE u.id = cu.id_user
+                AND cu.confirmation_code = $1
+                AND u.confirmed = FALSE
+            RETURNING u.confirmed;`,
+            [confirmationCode]
+        )
+
+        console.log("response",response)
+
+        if (response.rowCount === 0) {
+            return {"status":"ko", "message":"[mlang:confirm_message_ko]"}
+        }
+
+        return {"status":"ok", "message":"[mlang:confirm_message_ok]"}
+
+    } catch (error) {
+        // Manejo de errores inesperados
+        return {"status":"ko", "message":"[mlang:confirm_message_error]"}
     }
 }
