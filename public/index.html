@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="[language]">
     <head>
         <meta charset='utf-8'>
         <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -17,6 +17,7 @@
     <body >
         <h1 mlang="text;in_dev">[mlang:in_dev]</h1>
         <section id="language">
+            <h2 mlang="text;language">[mlang:language]</h2>
             <button onclick='set_language("es")'>ES</button>
             <button onclick='set_language("en")'>EN</button>
         </section>
@@ -28,7 +29,19 @@
                 <label for="login_remember" mlang="text;remember">[mlang:remember]</label>
                 <input type="checkbox" id="login_remember"/>
                 <button onclick='login()' mlang="text;login">[mlang:login]</button>
+            </form>
+        </section>
+        <section id="logout">
+            <h2 mlang="text;logout">[mlang:logout]</h2>
+            <form>
                 <button onclick='logout()' mlang="text;logout">[mlang:logout]</button>
+            </form>
+        </section>
+        <section id="reset_password">
+            <h2 mlang="text;reset_password">[mlang:reset_password]</h2>
+            <form>
+                 <input type="email" id="reset_email" placeholder="[mlang:email]" mlang="placeholder;email"/>
+                 <button onclick='reset_password()' mlang="text;reset_password">[mlang:reset_password]</button>
             </form>
         </section>
         <section id="signup">

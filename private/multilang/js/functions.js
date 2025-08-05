@@ -75,6 +75,7 @@ function translate(lang = "es", find){
         const objectFind = {}
         for(let indexFind = 0 ; indexFind < find.length ; indexFind++){
             const item = Object.entries(replace).find(key => key[0] === find[indexFind])
+            if(!item) continue
             objectFind[item[0]] = item[1]
         }
         find = objectFind

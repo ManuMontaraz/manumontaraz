@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const { app } = require(path.join(__dirname,'..','..','server','js','server.js'))
 const { verify_token } = require(path.join(__dirname,'..','..','database','js','database.js'))
-const { login, logout, signup, confirmation } = require(path.join(__dirname,'functions.js'))
+const { login, logout, reset_password, signup, confirmation } = require(path.join(__dirname,'functions.js'))
 const { translate, get_language } = require(path.join(__dirname,'..','..','multilang','js','functions.js'))
 
 // Login manual de usuario
@@ -51,6 +51,18 @@ app.post('/api/logout',verify_token,(request, response) => {
     logout(queryUser,response)
 }) 
 
+// Reset Password de usuario
+app.post('/api/reset_password',(request, response) => {
+    
+    if(!request.body)return
+    
+    const queryEmail = request.body.email
+
+    console.log(`enviando email de restauración de cuenta a "${queryEmail}"`)
+
+    reset_password(queryEmail,response)
+}) 
+
 // Registro de usuario
 app.post('/api/signup',(request, response) => {
     
@@ -85,33 +97,11 @@ app.post('/api/signup',(request, response) => {
     signup(data,response)
 }) 
 
-
 // confirmación de cuenta
-/*
-app.get('/confirm',(request, response) => {
-    
-    if(!request.query.user || !request.query.mail){
-        return response.status(400).json({ error: "Debes pasar el usuario y el correo como query params 'user' y 'mail'" })
-    }
-
-    const user = request.query.user
-    const mail = request.query.mail
-
-    console.log(`usuario "${user}" confirmando cuenta con correo ${mail}`)
-
-    response.json({ message: `Cuenta de usuario "${user}" confirmada correctamente` })
-})
-*/
-
-
 // Servir archivos dinámicos desde la carpeta public
 app.get('/confirm', async (request, response) => { 
 
     const language = await get_language(request.headers.cookie) || "es"
-
-    if(!request.query.code){
-        //return response.status(400).json({ error: translate(language, "[mlang:confirm_message_error]") })
-    }
 
     const code = request.query.code
 
@@ -125,16 +115,43 @@ app.get('/confirm', async (request, response) => {
             return response.status(500).send('Error leyendo el archivo')
         }
 
-        // TO-DO: Aquí debería verificar el código de confirmación y activar la cuenta del usuario
         const message = await translate(language,await confirmation(code))
 
         console.log(`Resultado de la confirmación2:`, message)
 
         let replacedHtml = await translate(language, html)
-        replacedHtml = replacedHtml.replaceAll("[confirm:message]", message)
+        replacedHtml = replacedHtml.replaceAll("[confirm:message]", message).replaceAll("[language]", language)
 
-        
-        
+        response.set('Content-Type', 'text/html')
+        response.send(replacedHtml)
+    })
+})
+
+// Restablecer contraseña de usuario
+// Servir archivos dinámicos desde la carpeta public
+app.get('/restore_password', async (request, response) => { 
+
+    const language = await get_language(request.headers.cookie) || "es"
+
+    const code = request.query.code
+
+    console.log(`confirmando cuenta con código "${code}".`)
+
+    console.log(`Petición recibida en: ${language}`)
+
+    const filePath = path.join(__dirname, '..', '..', '..', 'public', 'html', 'restore_password.html')
+    fs.readFile(filePath, 'utf8', async (error, html) => {
+        if (error) {
+            return response.status(500).send('Error leyendo el archivo')
+        }
+
+        // TO-DO: Aquí debería verificar el código de restablecimiento de contraseña y enviar un mensaje de éxito o error al usuario.
+        const message = await translate(language,await confirmation(code)) // cambiar funcion confirmation a reset_password
+
+        console.log(`Resultado de la confirmación2:`, message)
+
+        let replacedHtml = await translate(language, html)
+        replacedHtml = replacedHtml.replaceAll("[restore_password:message]", message).replaceAll("[language]", language)
 
         response.set('Content-Type', 'text/html')
         response.send(replacedHtml)

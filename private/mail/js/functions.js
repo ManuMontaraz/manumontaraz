@@ -85,32 +85,32 @@ function send_mail(template, to, language = "es", extraData = {}) {
 
     const filePath = path.join(__dirname, '..', 'html', `${template}.html`)
 
+    let html = fs.readFileSync(filePath, 'utf8')
+    if (!html){
+        console.error(`No se encontró el archivo de plantilla "${template}" en la ruta: ${filePath}`)
+        return false
+    }
+
+    // Convertir CSS a estilos inline
+    html = css_to_inline(html)
+
+    console.log("html:",html)
+
     switch (template) {
         case "signup":
-
-            let html = fs.readFileSync(filePath, 'utf8')
-            if (!html){
-                console.error(`No se encontró el archivo de plantilla "${template}" en la ruta: ${filePath}`)
-                return false
-            }
-
-            // Convertir CSS a estilos inline
-            html = css_to_inline(html)
-
-            console.log("html:",html)
-
             from = "noreply"
             subject = translate(language, "[mlang:mail_signup_subject]")
-            message = translate(language, html)
-
-            //from = "noreply"
-            //subject = "Bienvenido a Manu Montaraz"
-            //message = "<h1>Gracias por registrarte en Manu Montaraz.</h1> Estamos encantados de tenerte con nosotros. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos."
+        break
+        case "reset_password":
+            from = "noreply"
+            subject = translate(language, "[mlang:mail_reset_password_subject]")
         break
         default:
             console.error(`No se encontró el template "${template}"`)
             return false
     }
+
+    message = translate(language, html)
 
     //console.log("extraData",extraData)
     if(Object.entries(extraData).length > 0) {

@@ -1,7 +1,7 @@
 const path = require('path')
 const jwt = require('jsonwebtoken')
 const { send } = require('process')
-const { getUserByUsernameOrEmail, signupUser, confirmUser } = require(path.join(__dirname, 'queries.js'))
+const { getUserByUsernameOrEmail, generateKeyForResetPassword, signupUser, confirmUser } = require(path.join(__dirname, 'queries.js'))
 const { verify_password, hash_password } = require(path.join(__dirname, '..', '..', 'database', 'js', 'database.js'))
 const { send_mail } = require(path.join(__dirname, '..', '..', 'mail', 'js', 'functions.js'))
 
@@ -66,6 +66,46 @@ async function login(data, response) {
         response.setHeader('Set-Cookie', `montarazSession=${token}; Path=/; Max-Age=${remember?'604800':'3600'}; SameSite=Strict`)
         response.json({token, name:user.name, last_name:user.last_name, message: 'Inicio de sesión correcto', language: user.language || 'es' }) // Devuelve el token y el nombre del usuario
     })
+}
+
+async function reset_password(email, response) {
+    if (!email) {
+        console.log('Email no proporcionado para restablecer la contraseña')
+        return response.status(400).json({ message: 'Email no proporcionado' })
+    }
+
+    console.log(`Enviando instrucciones para restablecer la contraseña al correo "${email}"`)
+    const data = await generateKeyForResetPassword(email)
+
+    if (!data) {
+        console.log(`Error al generar el código de restablecimiento de contraseña para el email "${email}"`)
+        return response.status(500).json({ message: 'Error al generar el código de restablecimiento de contraseña' })
+    }
+
+    console.log("data",data)
+
+    let link = `https://${process.env.DNS}`
+    if(process.env.SUBDOMAIN){
+        link = `https://${process.env.SUBDOMAIN}.${process.env.DNS}`
+    }
+
+    let contact = `${JSON.parse(process.env.MAIL_ACCOUNTS).contact.user}@${process.env.DNS}` || ""
+
+    // Enviar correo de restablecimiento de contraseña
+    send_mail(
+        'reset_password',
+        email,
+        data.language,
+        {
+            "name": data.name,
+            "contact_email": contact,
+            "link": new URL(`/restore_password?code=${data.reset_password_code}`,link)
+        }
+    )
+
+    // Aquí deberías enviar un correo electrónico con las instrucciones para restablecer la contraseña
+    // Por ahora, solo devolvemos un mensaje de éxito
+    response.json({ message: `Instrucciones para restablecer la contraseña enviadas a ${email}` })
 }
 
 async function signup(data, response){
@@ -165,4 +205,4 @@ async function confirmation(code, response) {
     //response.json({ message: `Cuenta confirmada con código ${code}` })
 }
 
-module.exports = { login, logout, signup, confirmation }
+module.exports = { login, logout, reset_password, signup, confirmation }

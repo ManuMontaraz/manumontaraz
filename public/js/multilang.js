@@ -54,6 +54,7 @@ function set_language(lang = "es"){
             }
         }
 
+        document.querySelector("html").setAttribute("lang",lang)
         document.querySelector("#log").innerText = JSON.stringify(data)
     })
 }

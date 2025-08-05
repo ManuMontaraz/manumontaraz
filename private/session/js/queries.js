@@ -21,6 +21,42 @@ exports.getUserByUsernameOrEmail = async (usernameOrEmail) => {
     return response.rows[0] || null
 }
 
+exports.generateKeyForResetPassword = async (email) => {
+    try {
+        const response = await pool.query(
+            `WITH inserted_user AS (
+                SELECT id, name, language
+                FROM users
+                WHERE email = $1
+            ),
+            upsert_reset_password AS (
+                INSERT INTO reset_password (id_user)
+                SELECT id
+                FROM inserted_user
+                ON CONFLICT (id_user)
+                DO UPDATE SET
+                    reset_password_code = DEFAULT,
+                    date_updated = NOW()
+                RETURNING reset_password_code, id_user
+            )
+            SELECT rp.reset_password_code, u.name, u.language
+            FROM upsert_reset_password AS rp
+            JOIN inserted_user AS u
+                ON rp.id_user = u.id;`,
+            [email]
+        )
+        if (response.rowCount === 0) {
+            console.log(`No se encontró un usuario con el email: ${email}`)
+            return null
+        }
+        return response.rows[0]
+    }
+    catch (error) {
+        console.error('Error generating reset password key:', error)
+        return null
+    }
+}
+
 exports.signupUser = async (userData) => {
 
     try {
@@ -30,14 +66,19 @@ exports.signupUser = async (userData) => {
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING id
             ),
-            inserted_confirmation AS (
+            upserted_confirmation AS (
                 INSERT INTO confirmation_users (id_user)
-                SELECT id FROM inserted_user
+                SELECT id
+                FROM inserted_user
+                ON CONFLICT (id_user)
+                DO UPDATE SET
+                    confirmation_code = DEFAULT,
+                    date_updated = NOW()
                 RETURNING id_user, confirmation_code
             )
             SELECT u.id, c.confirmation_code
             FROM inserted_user u
-            JOIN inserted_confirmation c ON u.id = c.id_user;`,
+            JOIN upserted_confirmation c ON u.id = c.id_user;`,
             [userData.username, userData.name, userData.last_name, userData.email, userData.password, userData.password_salt, userData.language]
         )
 

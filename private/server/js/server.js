@@ -58,8 +58,7 @@ dns.lookup(process.env.DNS, (error, address) => {
     // Servir archivos dinámicos desde la carpeta public
     app.get('/', async (request, response) => { 
         
-        // TO-DO: Obtener el idioma de sesión si existe, si no existe, de cookie, si no existe, del header
-        const language = await get_language(request.headers.cookie) || "es"//request.headers.cookie.split(";").find(cookie => cookie.trim().startsWith("language=")).split("=")[1] || request.headers['accept-language'].split(";")[0].split(",")[1] || 'es'
+        const language = await get_language(request.headers.cookie) || "es"
 
         console.log(`Petición recibida en: ${language}`)
 
@@ -69,7 +68,8 @@ dns.lookup(process.env.DNS, (error, address) => {
                 return response.status(500).send('Error leyendo el archivo')
             }
 
-            const replacedHtml = translate(language, html)
+            let replacedHtml = translate(language, html)
+            replacedHtml = replacedHtml.replaceAll("[language]", language)
 
             response.set('Content-Type', 'text/html')
             response.send(replacedHtml)

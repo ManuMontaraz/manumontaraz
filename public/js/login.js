@@ -109,6 +109,40 @@ function logout(){
     })
 }
 
+function reset_password(){
+    event.preventDefault()
+
+    const elementEmail = document.querySelector("#reset_email")
+
+    if (!elementEmail.value) {
+        document.querySelector("#log").innerText = "Por favor, completa el campo de email."
+        return
+    }
+
+    const url = "/api/reset_password"
+
+    const headers = {
+        "Content-Type": "application/json; charset=utf-8"
+    }
+    const body = JSON.stringify({
+        email: elementEmail.value
+    })
+
+    document.querySelector("#log").innerText = "Enviando instrucciones para restablecer la contraseña..."
+
+    fetch(
+        url,
+        {
+            method: "POST",
+            headers: headers,
+            body: body
+        }
+    ).then(response=>response.json()).then(response=>{
+        console.log("response",response)
+        document.querySelector("#log").innerText = JSON.stringify(response)
+    })
+}
+
 function signup(){
     event.preventDefault()
 
