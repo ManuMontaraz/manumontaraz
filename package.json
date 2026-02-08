@@ -4,22 +4,34 @@
   "description": "manu montaraz web",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon private/server/js/server.js",
+    "start": "npm run build && node private/server/js/server.js",
+    "build": "npm run build:css",
+    "build:css": "NODE_ENV=production postcss \"public/**/*.css\" --dir dist/public/css",
+
+    "start_dev": "npm run build_dev",
+    "build_dev": "npm run build_dev:css & nodemon private/server/js/server.js",
+    "build_dev:css": "NODE_ENV=development postcss \"public/**/*.css\" --dir dist/public/css --watch",
+    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Manu Montaraz",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "nodemon": "3.1.10"
+    "cssnano": "^7.1.2",
+    "nodemon": "3.1.10",
+    "postcss": "8.5.6",
+    "postcss-cli": "11.0.1",
+    "postcss-nested": "7.0.2",
+    "postcss-nesting": "14.0.0"
   },
   "dependencies": {
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^7.0.5",
-    "pg": "^8.16.0",
-    "socket.io": "^4.8.1",
-    "stripe": "^18.1.1"
+    "dotenv": "16.5.0",
+    "express": "5.1.0",
+    "express-rate-limit": "8.0.1",
+    "jsonwebtoken": "9.0.2",
+    "nodemailer": "7.0.5",
+    "pg": "8.16.0",
+    "socket.io": "4.8.1",
+    "stripe": "18.1.1"
   }
 }

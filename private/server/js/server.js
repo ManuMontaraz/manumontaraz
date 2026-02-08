@@ -31,11 +31,11 @@ dns.lookup(process.env.DNS, (error, address) => {
         console.error(err)
         process.exit(1) // Salir si falla la resolución
     }
-
+ 
     console.log(`Dirección IP del proxy: ${address}`)
     
     app.set('trust proxy', address)
-    app.use(limiter)
+    app.use(limiter) 
     app.use(express.json())
 
     // Crear servidor HTTP
@@ -62,7 +62,7 @@ dns.lookup(process.env.DNS, (error, address) => {
 
         console.log(`Petición recibida en: ${language}`)
 
-        const filePath = path.join(__dirname, '..', '..', '..', 'public', 'index.html')
+        const filePath = path.join(__dirname, '..', '..', '..', 'public', 'html', 'index.html')
         fs.readFile(filePath, 'utf8', (error, html) => {
             if (error) {
                 return response.status(500).send('Error leyendo el archivo')
@@ -77,11 +77,12 @@ dns.lookup(process.env.DNS, (error, address) => {
     })
 
     // Servir archivos estáticos desde la carpeta public
+    app.use(express.static(path.join(__dirname, '..', '..', '..', 'dist', 'public'))) 
     app.use(express.static(path.join(__dirname, '..', '..', '..', 'public'))) 
 
     // Arrancar servidor
     server.listen(port, () => {
-    console.log(`Servidor HTTP escuchando en http://localhost:${port}`)
+        console.log(`Servidor HTTP escuchando en http://localhost:${port}`)
     })
 })
 
