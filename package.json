@@ -2,22 +2,29 @@
   "name": "manumontaraz",
   "version": "0.0.0",
   "description": "manu montaraz web",
-  "main": "server.js",
+  "main": "dist/private/server.js",
   "scripts": {
-    "start": "npm run build && node private/server/js/server.js",
-    "build": "npm run build:css",
-    "build:css": "NODE_ENV=production postcss \"public/**/*.css\" --dir dist/public/css",
-
-    "start_dev": "npm run build_dev",
-    "build_dev": "npm run build_dev:css & nodemon private/server/js/server.js",
-    "build_dev:css": "NODE_ENV=development postcss \"public/**/*.css\" --dir dist/public/css --watch",
+    "start": "npm run build & node dist/private/server/js/server.js",
+    "build": "npm run build:css & npm run build:js & npm run build:private:js",
+    "build:css": "postcss \"public/**/*.css\" --dir dist/public/css",
+    "build:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify --format=esm --log-level=info",
+    "build:private:js": "esbuild private/**/*.js --outdir=dist/private --outbase=public --minify --format=cjs --log-level=info",
+    
+    "start_dev": "npm run build_dev & nodemon dist/private/server/js/server.js",
+    "build_dev": "npm run build_dev:css & npm run build_dev:js & npm run build_dev:private:js",
+    "build_dev:css": "postcss \"public/**/*.css\" --dir dist/public/css --watch",
+    "build_dev:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify --format=esm --watch=forever --log-level=info",
+    "build_dev:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify --format=cjs --watch=forever --log-level=info",
     
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Manu Montaraz",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "cssnano": "^7.1.2",
+    "cssnano": "7.1.2",
+    "esbuild": "0.27.3",
+    "esbuild-plugin-html-minify": "1.0.0",
+    "html-minifier-terser": "7.2.0",
     "nodemon": "3.1.10",
     "postcss": "8.5.6",
     "postcss-cli": "11.0.1",
