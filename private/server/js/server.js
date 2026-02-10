@@ -62,7 +62,7 @@ dns.lookup(process.env.DNS, (error, address) => {
 
         console.log(`Petición recibida en: ${language}`)
 
-        console.log(__dirname, '/..', '/..', '/..', '/public', '/html', '/index.html')
+        //console.log(__dirname, '/..', '/..', '/..', '/public', '/html', '/index.html')
         const filePath = path.join(__dirname, '..', '..', '..', 'public', 'html', 'index.html')
         fs.readFile(filePath, 'utf8', (error, html) => {
             if (error) {
@@ -78,7 +78,6 @@ dns.lookup(process.env.DNS, (error, address) => {
     })
 
     // Servir archivos estáticos desde la carpeta public
-    app.use(express.static(path.join(__dirname, '..', '..', '..', 'dist', 'public'))) 
     app.use(express.static(path.join(__dirname, '..', '..', '..', 'public'))) 
 
     // Arrancar servidor

@@ -8,15 +8,15 @@
     "build": "npm run build:css & npm run build:js & npm run build:private:js & npm run build:html",
     "build:html": "cp -r public/html* dist/public/html ",
     "build:css": "postcss \"public/**/*.css\" --dir dist/public/css",
-    "build:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify --format=esm --log-level=info",
-    "build:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=public --minify --format=cjs --log-level=info",
+    "build:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify-syntax --minify-whitespace --format=esm --log-level=info",
+    "build:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify-syntax --minify-whitespace --format=cjs --log-level=info",
     
     "start_dev": "npm run build_dev & nodemon dist/private/server/js/server.js",
     "build_dev": "npm run build_dev:css & npm run build_dev:js & npm run build_dev:private:js & npm run build_dev:html",
     "build_dev:html": "cp -r public/html* dist/public/html ",
     "build_dev:css": "postcss \"public/**/*.css\" --dir dist/public/css --watch",
-    "build_dev:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify --format=esm --watch=forever --log-level=info",
-    "build_dev:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify --format=cjs --watch=forever --log-level=info",
+    "build_dev:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify-syntax --minify-whitespace --format=esm --watch=forever --log-level=info",
+    "build_dev:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify-syntax --minify-whitespace --format=cjs --watch=forever --log-level=info",
     
     "test": "echo \"Error: no test specified\" && exit 1"
   },
