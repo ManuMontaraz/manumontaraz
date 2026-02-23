@@ -7,69 +7,23 @@
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <link rel='stylesheet' type='text/css' media='screen' href='css/index.css'>
         
-        <script src='js/multilang.js'></script>
-        <script src='js/login.js'></script>
         <script src='js/index.js'></script>
-        <script src='js/stripe.js'></script>
         
         <script src="socket.io/socket.io.js"></script>
     </head>
     <body >
-        <h1 mlang="text;in_dev">[mlang:in_dev]</h1>
-        <section id="language">
-            <h2 mlang="text;language">[mlang:language]</h2>
-            <button onclick='set_language("es")'>ES</button>
-            <button onclick='set_language("en")'>EN</button>
-        </section>
-        <section id="login">
-            <h2 mlang="text;login">[mlang:login]</h2>
-            <form>
-                <input type="text" id="login_user" placeholder="[mlang:user_or_mail]" mlang="placeholder;user_or_mail"/>
-                <input type="password" id="login_pass" placeholder="[mlang:password]" autocomplete="on" mlang="placeholder;password"/>
-                <label for="login_remember" mlang="text;remember">[mlang:remember]</label>
-                <input type="checkbox" id="login_remember"/>
-                <button onclick='login()' mlang="text;login">[mlang:login]</button>
-            </form>
-        </section>
-        <section id="logout">
-            <h2 mlang="text;logout">[mlang:logout]</h2>
-            <form>
-                <button onclick='logout()' mlang="text;logout">[mlang:logout]</button>
-            </form>
-        </section>
-        <section id="reset_password">
-            <h2 mlang="text;reset_password">[mlang:reset_password]</h2>
-            <form>
-                 <input type="email" id="reset_email" placeholder="[mlang:email]" mlang="placeholder;email"/>
-                 <button onclick='reset_password()' mlang="text;reset_password">[mlang:reset_password]</button>
-            </form>
-        </section>
-        <section id="signup">
-            <h2 mlang="text;signup">[mlang:signup]</h2>
-            <form>
-                <input type="text" id="signup_name" placeholder="[mlang:name]" mlang="placeholder;name"/>
-                <input type="text" id="signup_last_name" placeholder="[mlang:last_name]" mlang="placeholder;last_name"/>
-                <input type="text" id="signup_user" placeholder="[mlang:username]" mlang="placeholder;username"/>
-                <input type="email" id="signup_email" placeholder="[mlang:email]" mlang="placeholder;email"/>
-                <input type="password" id="signup_pass" placeholder="[mlang:password]" autocomplete="on" mlang="placeholder;password"/>
-                <input type="password" id="signup_confirm_pass" placeholder="[mlang:confirm_password]" autocomplete="off" mlang="placeholder;confirm_password"/>
-                <label for="signup_remember" mlang="text;remember">[mlang:remember]</label>
-                <input type="checkbox" id="signup_remember"/>
-                <label for="signup_terms" mlang="text;accept_terms">[mlang:accept_terms]</label>
-                <input type="checkbox" id="signup_terms"/>
-                <label for="signup_newsletter" mlang="text;subscribe">[mlang:subscribe]</label>
-                <input type="checkbox" id="signup_newsletter"/>
-                <button onclick='signup()' mlang="text;signup">[mlang:signup]</button>
-            </form>
-        </section>
-        <section id="testing">
-            <h2 mlang="text;testing">[mlang:testing]</h2>
-            <textarea id="log" rows="10" cols="50"></textarea>
-            <a href="/api/status" mlang="text;status">[mlang:status]</a>
-            <button href="/api" onclick='test_api()' mlang="text;test_api">[mlang:test_api]</button>
-        </section>
-        <section id="shop">
-            <h2 mlang="text;shop">[mlang:shop]</h2>
+        <h1>EN DESARROLLO</h1>
+        <section id="login_section">
+                <h2>Iniciar sesión</h2>
+                <form id="login_form">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required>
+                    <br>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required>
+                    <br>
+                    <button type="submit">Iniciar sesión</button>
+                </form>
         </section>
     </body>
 </html>

@@ -3,26 +3,30 @@
   "version": "0.0.0",
   "description": "manu montaraz web",
   "main": "dist/private/server.js",
+  "type": "module",
   "scripts": {
+    "prepare_dist": "mkdir -p dist/public/css dist/public/html dist/private",
+
     "start": "npm run build & node dist/private/server/js/server.js",
-    "build": "npm run build:css & npm run build:js & npm run build:private:js & npm run build:html",
+    "build": "npm run prepare_dist && npm run build:css & npm run build:js & npm run build:private:js & npm run build:html",
     "build:html": "cp -r public/html* dist/public/html ",
     "build:css": "postcss \"public/**/*.css\" --dir dist/public/css",
     "build:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify-syntax --minify-whitespace --format=esm --log-level=info",
-    "build:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify-syntax --minify-whitespace --format=cjs --log-level=info",
+    "build:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify-syntax --minify-whitespace --format=esm --log-level=info",
     
     "start_dev": "npm run build_dev & nodemon dist/private/server/js/server.js",
-    "build_dev": "npm run build_dev:css & npm run build_dev:js & npm run build_dev:private:js & npm run build_dev:html",
-    "build_dev:html": "cp -r public/html* dist/public/html ",
+    "build_dev": "npm run prepare_dist && npm run build_dev:css & npm run build_dev:js & npm run build_dev:private:js & npm run build_dev:html",
+    "build_dev:html": "chokidar 'public/html/**/*' -c 'cp -r public/html/* dist/public/html/'",
     "build_dev:css": "postcss \"public/**/*.css\" --dir dist/public/css --watch",
     "build_dev:js": "esbuild public/**/*.js --outdir=dist/public --outbase=public --minify-syntax --minify-whitespace --format=esm --watch=forever --log-level=info",
-    "build_dev:private:js": "cp -r private/* dist/private & esbuild private/**/*.js --outdir=dist/private --outbase=private --minify-syntax --minify-whitespace --format=cjs --watch=forever --log-level=info",
+    "build_dev:private:js": "chokidar 'private/**/*' -c 'cp -r private/* dist/private' & esbuild private/**/*.js --outdir=dist/private --outbase=private --format=esm --watch=forever --log-level=info",
     
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Manu Montaraz",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "chokidar-cli": "^3.0.0",
     "cpx2": "8.0.0",
     "cssnano": "7.1.2",
     "esbuild": "0.27.3",
