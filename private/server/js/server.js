@@ -12,9 +12,11 @@ import EventEmitter from 'node:events'
 import { fileURLToPath } from 'url';
 import { dirname } from "path";
 
+import { translate } from '../../multilang/js/functions.js'
+
 // Obtener __dirname en ESM
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+export const __filename = fileURLToPath(import.meta.url)
+export const __dirname = path.dirname(__filename)
 
 // Cargar variables de entorno
 dotenv.config()
@@ -33,6 +35,8 @@ const limiter = rateLimit({
 export const app = express()
 
 dns.lookup(process.env.DNS, (error, address) => {
+    const debug = false
+
     if (error) { 
         console.error(`No se pudo resolver el dominio: ${process.env.DNS}`)
         console.error(err)
@@ -51,19 +55,20 @@ dns.lookup(process.env.DNS, (error, address) => {
     // Servir archivos dinámicos desde la carpeta public
     app.get('/', async (request, response) => { 
         
-        const language = /*await get_language(request.headers.cookie) || */ "es"
+        const language = await get_language(request.headers.cookie) || "es"
 
-        console.log(`Petición recibida en: ${language}`)
-
-        //console.log(__dirname, '/..', '/..', '/..', '/public', '/html', '/index.html')
+        if(debug) console.log(`Petición recibida en: ${language}`)
+            
         const filePath = path.join(__dirname, '..', '..', '..', 'public', 'html', 'index.html')
-        fs.readFile(filePath, 'utf8', (error, html) => {
+        fs.readFile(filePath, 'utf8', async (error, html) => {
             if (error) {
                 return response.status(500).send('Error leyendo el archivo')
             }
 
-            let replacedHtml = html //translate(language, html)
-            replacedHtml = replacedHtml.replaceAll("[language]", language)
+            let replacedHtml = html.replaceAll("[language]", language)
+            replacedHtml = await translate(language, replacedHtml)
+
+            if(debug) console.log(`Archivo HTML traducido para el idioma ${language}:\n`, replacedHtml)
 
             response.set('Content-Type', 'text/html')
             response.send(replacedHtml)
